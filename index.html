@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Interview Guide - Dark Mode</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">JS Interview Guide</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>JavaScript Interview Preparation</h1>
+            <p class="subtitle">Complete guide with questions, answers, and code examples</p>
+        </section>
+
+        <section class="section">
+            <h2>Note</h2>
+            <ul>
+                <li>Questions are categorized for fast reference</li>
+                <li>Answers include concise explanations and JavaScript sample code snippets for direct practice</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>JavaScript/General Technical Interview Questions</h2>
+            
+            <div class="question-card">
+                <h3>1. Explain the difference between a linked list and an array.</h3>
+                <p>An array uses contiguous memory and allows fast random access (O(1)), but has fixed size. Linked lists are dynamically sized, each node points to the next, and accessing a particular index is O(n). Insertions/deletions are cheaper if you know the pointer.</p>
+            </div>
+
+            <div class="question-card">
+                <h3>2. How do you detect a cycle in a linked list?</h3>
+                <p><strong>Floyd's Cycle Detection Algorithm:</strong></p>
+                <pre><code>function hasCycle(head) {
+  let slow = head, fast = head;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow === fast) return true;
+  }
+  return false;
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>3. Describe time complexity of quicksort and when it performs poorly.</h3>
+                <ul>
+                    <li><strong>Average:</strong> O(n log n)</li>
+                    <li><strong>Worst-case (already sorted data/bad pivots):</strong> O(n²)</li>
+                </ul>
+            </div>
+
+            <div class="question-card">
+                <h3>4. Reverse a binary tree.</h3>
+                <pre><code>function invertTree(root) {
+  if (!root) return null;
+  [root.left, root.right] = [invertTree(root.right), invertTree(root.left)];
+  return root;
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>5. What is a race condition? How do you prevent it?</h3>
+                <p>Race condition: Multiple threads/fibers modify shared data so output depends on unfair timing/scheduling. Prevent by using locks, mutexes, or synchronizing access to shared resources.</p>
+            </div>
+
+            <div class="question-card">
+                <h3>6. Explain memoization and give an example.</h3>
+                <p>Caching expensive function calls to speed up repeat requests.</p>
+                <pre><code>function fib(n, memo = {}) {
+  if (n <= 1) return n;
+  if (memo[n]) return memo[n];
+  memo[n] = fib(n - 1, memo) + fib(n - 2, memo);
+  return memo[n];
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>7. Find the kth largest element in an array.</h3>
+                <pre><code>function findKthLargest(nums, k) {
+  nums.sort((a, b) => b - a);
+  return nums[k - 1];
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>8. Differences between processes and threads.</h3>
+                <p>Processes have separate memory, higher creation overhead; threads share process memory, lighter and communicate inside process.</p>
+            </div>
+
+            <div class="question-card">
+                <h3>9. What is dynamic programming?</h3>
+                <p>Breaking problems into overlapping subproblems requiring caching/memoization. Used for optimization (e.g., Fibonacci, shortest path).</p>
+            </div>
+
+            <div class="question-card">
+                <h3>10. Design a URL shortening service.</h3>
+                <p>Generate hash keys, store map in a DB, resolve collisions, ensure uniqueness, and enable quick redirects. Consider scaling and throughput.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Additional JavaScript Coding Questions and Snippets</h2>
+
+            <div class="question-card">
+                <h3>isPalindrome</h3>
+                <pre><code>function isPalindrome(str) {
+  return str === str.split('').reverse().join('');
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>sumArray</h3>
+                <pre><code>function sumArray(arr) {
+  return arr.reduce((acc, curr) => acc + curr, 0);
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>removeFalsyValues</h3>
+                <pre><code>function removeFalsyValues(arr) {
+  return arr.filter(Boolean);
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>removeDuplicates</h3>
+                <pre><code>function removeDuplicates(arr) {
+  return [...new Set(arr)];
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>areAnagrams</h3>
+                <pre><code>function areAnagrams(str1, str2) {
+  return str1.split('').sort().join('') === str2.split('').sort().join('');
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>factorial (recursive)</h3>
+                <pre><code>function factorial(n) {
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>isPrime</h3>
+                <pre><code>function isPrime(num) {
+  if (num <= 1) return false;
+  if (num === 2) return true;
+  if (num % 2 === 0) return false;
+  for (let i = 3; i <= Math.sqrt(num); i += 2) {
+    if (num % i === 0) return false;
+  }
+  return true;
+}</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>curry function</h3>
+                <pre><code>const add = a => {
+  return b => {
+    if (b)
+      return add(a + b);
+    return a;
+  };
+};
+
+add(2)(3)(4)(); // Returns 9</code></pre>
+            </div>
+
+            <div class="question-card">
+                <h3>custom promise</h3>
+                <pre><code>class MyPromise {
+  static P = 'pending';
+  static F = 'fulfilled';
+  static R = 'rejected';
+
+  constructor(fn) {
+    this.s = MyPromise.P;
+    this.v = undefined;
+    this.e = undefined;
+    this.f = [];
+    this.r = [];
+
+    const ok = x => {
+      if (this.s !== MyPromise.P) return;
+      this.s = MyPromise.F;
+      this.v = x;
+      this.f.forEach(fn => fn(x));
+    };
+
+    const fail = x => {
+      if (this.s !== MyPromise.P) return;
+      this.s = MyPromise.R;
+      this.e = x;
+      this.r.forEach(fn => fn(x));
+    };
+
+    try {
+      fn(ok, fail);
+    } catch (x) {
+      fail(x);
+    }
+  }
+
+  then(f1, r1) {
+    return new MyPromise((ok, fail) => {
+      const done = x => {
+        try { ok(typeof f1 === 'function' ? f1(x) : x); }
+        catch (e) { fail(e); }
+      };
+      const error = x => {
+        try { if (typeof r1 === 'function') ok(r1(x)); else fail(x); }
+        catch (e) { fail(e); }
+      };
+      if (this.s === MyPromise.F)
+        setTimeout(() => done(this.v), 0);
+      else if (this.s === MyPromise.R)
+        setTimeout(() => error(this.e), 0);
+      else {
+        this.f.push(done);
+        this.r.push(error);
+      }
+    });
+  }
+
+  catch(r1) {
+    return this.then(null, r1);
+  }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Popular JS Concepts (Short Answers)</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>var, let, const</h4>
+                    <p>Scopes and re-declaration differences.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Hoisting</h4>
+                    <p>Variable and function declarations are moved to top; only var initialized as undefined, let/const in "temporal dead zone".</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Type coercion</h4>
+                    <p>Automatic type conversion in operations.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Deep vs shallow copy</h4>
+                    <p>Shallow copies references; deep copies nested contents.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>== vs ===</h4>
+                    <p>Value vs value-and-type equality.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Closures</h4>
+                    <p>Function remembering variables in their lexical scope.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Event loop</h4>
+                    <p>How JS handles async with call stack, macro/microtasks.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Prototypal inheritance</h4>
+                    <p>Objects inherit via prototype chains.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>System Design & Behavioral Tips</h2>
+            <ul>
+                <li>Communicate your approach clearly before coding.</li>
+                <li>Discuss trade-offs, edge cases, complexity.</li>
+                <li>Practice live coding in shared editors.</li>
+            </ul>
+            <p class="highlight">Good luck with your JavaScript interview! Use this as your prepping cheat-sheet.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 JavaScript Interview Guide | MIT License</p>
+            <p>Created by <a href="https://github.com/g-h-0-S-t" target="_blank">g-h-0-S-t</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
