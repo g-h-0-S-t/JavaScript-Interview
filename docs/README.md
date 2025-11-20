@@ -285,6 +285,19 @@ function mergeArrays(arr1, arr2) {
 }
 ```
 
+### curry function
+```javascript
+const add = a => {
+  return b => {
+    if (b) 
+      return add(a + b); // If b is present, call add recursively with accumulated sum
+    return a; // When called with empty (no b), return the accumulated sum a
+  };
+};
+
+add(2)(3)(4)(); // This chains calls with 2, 3, 4, then empty call to get sum
+```
+
 ### custom promise
 ```javascript
 class MyPromise {
