@@ -99,7 +99,7 @@ function enhanceMermaid() {
 
   // Initialize Mermaid (async)
   if (typeof mermaid !== "undefined") {
-    mermaid.initialize({ startOnLoad: false, theme: "default" });
+    mermaid.initialize({ startOnLoad: false, theme: "dark" });
     mermaid.run();
   }
 }
@@ -116,6 +116,12 @@ searchInput.addEventListener("input", () => {
   if (!term) return;
 
   highlightTerm(contentEl, term);
+       
+    // Scroll to first match
+    const firstMatch = contentEl.querySelector('mark.search-hit');
+    if (firstMatch) {
+        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 });
 
 document.addEventListener("keydown", (e) => {
