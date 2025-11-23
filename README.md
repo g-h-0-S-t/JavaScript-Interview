@@ -194,9 +194,7 @@ Use try/catch, validate inputs, log errors, throw informative exceptions.
 ### 30. CAP theorem
 In distributed systems, can only guarantee 2 out of 3: Consistency, Availability, Partition tolerance during partitions.
 
-***
-
-## **Event Loop: Call Stack, Microtask Queue, and Macrotask Queue**
+### 31. Event Loop: Call Stack, Microtask Queue, and Macrotask Queue
 
 ### Understanding JavaScript's Event Loop
 
@@ -290,3 +288,205 @@ graph TB
     style ProcessBlock4 fill:light-blue,stroke:light-blue,stroke-width:2px
     style ProcessBlock5 fill:light-blue,stroke:light-blue,stroke-width:2px
 ```
+
+***
+
+## Additional JavaScript Coding Questions and Snippets
+
+#### **isPalindrome**
+```javascript
+function isPalindrome(str) {
+  return str === str.split('').reverse().join('');
+}
+```
+
+#### **sumArray**
+```javascript
+function sumArray(arr) {
+  return arr.reduce((acc, curr) => acc + curr, 0);
+}
+```
+
+#### **removeFalsyValues**
+```javascript
+function removeFalsyValues(arr) {
+  return arr.filter(Boolean);
+}
+```
+
+#### **removeDuplicates**
+```javascript
+function removeDuplicates(arr) {
+  return [...new Set(arr)];
+}
+```
+
+#### **areAnagrams**
+```javascript
+function areAnagrams(str1, str2) {
+  return str1.split('').sort().join('') === str2.split('').sort().join('');
+}
+```
+
+#### **factorial (recursive)**
+```javascript
+function factorial(n) {
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
+}
+```
+
+#### **isprime**
+```javascript
+function isprime(num) {
+  if (num <= 1) return false;
+  if (num === 2) return true;
+  if (num % 2 === 0) return false;
+  for (let i = 3; i <= Math.sqrt(num); i += 2) {
+    if (num % i === 0) return false;
+  }
+  return true;
+}
+```
+
+#### **findMaxDifference**
+```javascript
+function findMaxDifference(arr) {
+  if (arr.length < 2) return 0;
+  let minVal = arr[0], maxVal = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    minVal = Math.min(minVal, arr[i]);
+    maxVal = Math.max(maxVal, arr[i]);
+  }
+  return maxVal - minVal;
+}
+```
+
+#### **fibonacci sequence**
+```javascript
+function fibonacciSequence(n) {
+  if (n <= 0) return [];
+  if (n === 1) return [0];
+  const seq = [0, 1];
+  for (let i = 2; i < n; i++) seq.push(seq[i-1] + seq[i-2]);
+  return seq;
+}
+```
+
+#### **mergeArrays**
+```javascript
+function mergeArrays(arr1, arr2) {
+  return [...arr1, ...arr2];
+}
+```
+
+### curry function
+```javascript
+const add = a => {
+  return b => {
+    if (b) 
+      return add(a + b); // If b is present, call add recursively with accumulated sum
+    return a; // When called with empty (no b), return the accumulated sum a
+  };
+};
+
+add(2)(3)(4)(); // This chains calls with 2, 3, 4, then empty call to get sum
+```
+
+### custom promise
+```javascript
+class MyPromise {
+  static P = 'pending';
+  static F = 'fulfilled';
+  static R = 'rejected';
+
+  constructor(fn) {
+    this.s = MyPromise.P;
+    this.v = undefined;
+    this.e = undefined;
+    this.f = [];
+    this.r = [];
+
+    const ok = x => {
+      if (this.s !== MyPromise.P) return;
+      this.s = MyPromise.F;
+      this.v = x;
+      this.f.forEach(fn => fn(x));
+    };
+
+    const fail = x => {
+      if (this.s !== MyPromise.P) return;
+      this.s = MyPromise.R;
+      this.e = x;
+      this.r.forEach(fn => fn(x));
+    };
+
+    try {
+      fn(ok, fail);
+    } catch (x) {
+      fail(x);
+    }
+  }
+
+  then(f1, r1) {
+    return new MyPromise((ok, fail) => {
+      const done = x => {
+        try { ok(typeof f1 === 'function' ? f1(x) : x); }
+        catch (e) { fail(e); }
+      };
+      const error = x => {
+        try { if (typeof r1 === 'function') ok(r1(x)); else fail(x); }
+        catch (e) { fail(e); }
+      };
+      if (this.s === MyPromise.F)
+        setTimeout(() => done(this.v), 0);
+      else if (this.s === MyPromise.R)
+        setTimeout(() => error(this.e), 0);
+      else {
+        this.f.push(done);
+        this.r.push(error);
+      }
+    });
+  }
+
+  catch(r1) {
+    return this.then(null, r1);
+  }
+}
+
+// Success example
+const p1 = new MyPromise((ok, fail) => setTimeout(() => ok("yes"), 100));
+p1.then(x => { console.log('Resolved:', x); return 'next'; })
+  .then(x => { console.log(x); throw "fail!"; })
+  .catch(e => console.log('Caught:', e));
+
+// Error example
+const p2 = new MyPromise((ok, fail) => setTimeout(() => fail("no"), 100));
+p2.then(x => console.log('Should skip:', x))
+  .catch(e => console.log('Caught error:', e));
+```
+
+***
+
+## **Popular JS Concepts (Short Answers)**
+
+- `var`, `let`, `const`: Scopes and re-declaration differences.
+- Hoisting: Variable and function declarations are moved to top; only `var` initialized as `undefined`, `let`/`const` in “temporal dead zone”.
+- Type coercion: Automatic type conversion in operations.
+- Deep vs shallow copy: Shallow copies references; deep copies nested contents.
+- Difference between == and ===: Value vs value-and-type equality.
+- Closures: Function remembering variables in their lexical scope.
+- Event loop: How JS handles async with call stack, macro/microtasks.
+- Prototypal inheritance: Objects inherit via prototype chains.
+
+***
+
+## **System Design & Behavioral Tips**
+- Communicate your approach clearly before coding.
+- Discuss trade-offs, edge cases, complexity.
+- Practice live coding in shared editors.
+
+***
+
+**Good luck with your JavaScript interview! Copy and use this as your prepping cheat-sheet.**
+
