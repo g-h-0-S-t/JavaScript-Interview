@@ -59,7 +59,6 @@ async function loadReadme() {
             mangle: false
         });
 
-                                            });
         
         // Parse markdown to HTML
         const html = marked.parse(markdown);
