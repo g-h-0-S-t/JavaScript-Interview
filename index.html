@@ -1,581 +1,161 @@
-<!doctype html>
+<!-- {% raw %} -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>JavaScript Interview Guide</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Interview Guide</title>
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="/manifest.json">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- highlight.js default theme will be switched by JS -->
-  <link id="hljs-theme" rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <!-- Highlight.js base -->
+    <link 
+        id="hljs-theme"
+        rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    />
 
-  <!-- app styles (optimized, single CSS) -->
-  <style>
-    /* ---------- variables ---------- */
-    :root{
-      --bg-primary:#0d1117;
-      --bg-secondary:#161b22;
-      --bg-tertiary:#21262d;
-      --text-primary:#c9d1d9;
-      --text-secondary:#8b949e;
-      --accent:#58a6ff;
-      --muted:#8b949e;
-      --code-bg:#161b22;
-      --max-width:1100px;
-      --radius:10px;
-      --glass: rgba(255,255,255,0.03);
-    }
-    [data-theme="light"]{
-      --bg-primary:#fff;
-      --bg-secondary:#f6f8fa;
-      --bg-tertiary:#eaeef2;
-      --text-primary:#24292f;
-      --text-secondary:#57606a;
-      --accent:#0969da;
-      --code-bg:#f6f8fa;
-      --glass: rgba(0,0,0,0.03);
-    }
+    <!-- GitHub Markdown CSS -->
+    <link 
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.4.0/github-markdown.min.css"
+    />
 
-    /* ---------- reset & layout ---------- */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background:var(--bg-primary);
-      color:var(--text-primary);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      transition:background .25s ease,color .25s ease;
-      line-height:1.5;
-    }
-    .app {
-      max-width:var(--max-width);
-      margin:1.25rem auto;
-      display:grid;
-      grid-template-columns: 260px 1fr;
-      gap:18px;
-      padding:0 18px;
-    }
+    <link rel="stylesheet" href="styles.css">
 
-    /* ---------- topbar ---------- */
-    .topbar{
-      grid-column:1 / -1;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:6px;
-    }
-    .brand{display:flex;align-items:center;gap:10px}
-    .logo{font-weight:700;font-size:1.1rem;color:var(--accent)}
-    .controls{display:flex;gap:8px;align-items:center}
+    <!-- Mermaid -->
+    <script type="module">
+        import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+        window.mermaid = mermaid;
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: "neutral",
+            securityLevel: "loose"
+        });
+    </script>
 
-    .search {
-      display:flex;
-      align-items:center;
-      gap:8px;
-      background:var(--bg-secondary);
-      border:1px solid rgba(255,255,255,0.03);
-      padding:8px;
-      border-radius:8px;
-    }
-    .search input{
-      background:transparent;border:0;outline:0;color:var(--text-primary);
-      min-width:260px;font-size:0.95rem;
-    }
-    .search input::placeholder{color:var(--muted)}
+    <!-- Marked -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    /* ---------- sidebar (TOC & tabs) ---------- */
-    aside.sidebar{
-      background:var(--bg-secondary);
-      border:1px solid rgba(255,255,255,0.02);
-      padding:12px;
-      border-radius:var(--radius);
-      height:calc(100vh - 80px);
-      overflow:auto;
-      position:sticky;top:12px;
-    }
-    .tabs {display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-    .tab {
-      padding:6px 10px;border-radius:8px;cursor:pointer;font-size:0.9rem;
-      background:transparent;border:1px solid transparent;color:var(--muted)
-    }
-    .tab.active {background:var(--accent);color:var(--bg-primary);border-color:transparent}
-
-    .toc {margin-top:8px;font-size:0.9rem}
-    .toc h4{margin:0 0 8px 0;color:var(--muted);font-weight:600;font-size:0.85rem}
-    .toc a{display:block;padding:6px 8px;border-radius:6px;color:var(--text-primary);text-decoration:none}
-    .toc a:hover{background:var(--glass)}
-    .toc a.active{background:var(--accent);color:var(--bg-primary)}
-
-    /* ---------- main content ---------- */
-    main.content{
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
-      border-radius:var(--radius);
-      padding:18px;
-      min-height:75vh;
-      border:1px solid rgba(255,255,255,0.03);
-    }
-    .meta {display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
-    .meta .left{display:flex;gap:12px;align-items:center}
-    .meta .right{display:flex;gap:8px;align-items:center}
-
-    /* markdown body */
-    .markdown-body {max-width:100%}
-    .markdown-body h1{font-size:1.9rem;margin:6px 0 12px 0;color:var(--text-primary)}
-    .markdown-body h2{font-size:1.4rem;margin:18px 0 10px 0;color:var(--text-primary)}
-    .markdown-body h3{font-size:1.1rem;margin:14px 0;color:var(--accent)}
-
-    /* details collapsible styling for questions */
-    details.question{background:var(--bg-tertiary);border:1px solid rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin:10px 0}
-    details.question summary{list-style:none;cursor:pointer;outline:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
-    details.question summary::-webkit-details-marker{display:none}
-    .q-title{font-weight:600;color:var(--text-primary)}
-    .q-body{margin-top:8px;color:var(--text-secondary)}
-
-    /* code blocks + copy button */
-    pre{
-      background:var(--code-bg);
-      padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02);
-      position:relative;margin:14px 0;font-size:0.92rem;
-    }
-    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace}
-    .copy-button{
-      position:absolute;top:10px;right:10px;padding:6px 10px;border-radius:6px;border:0;background:var(--bg-tertiary);
-      color:var(--text-primary);cursor:pointer;opacity:0;transition:all .18s;
-    }
-    pre:hover .copy-button{opacity:1}
-
-    /* mermaid */
-    .mermaid{display:flex;justify-content:center;margin:16px 0;max-width:100%}
-    .mermaid svg text{fill:var(--text-primary) !important;color:var(--text-primary) !important}
-
-    /* footer small */
-    .small{font-size:0.85rem;color:var(--muted)}
-
-    /* scroll to top floating button */
-    .scroll-top{
-      position:fixed;right:18px;bottom:18px;background:var(--accent);color:var(--bg-primary);
-      border-radius:999px;padding:10px 12px;box-shadow:0 6px 18px rgba(0,0,0,0.25);cursor:pointer;border:0;font-weight:600;z-index:2000;
-    }
-
-    /* responsive */
-    @media (max-width:980px){
-      .app{grid-template-columns:1fr; padding:0 14px}
-      aside.sidebar{position:static;height:auto;order:2}
-      main.content{order:1}
-    }
-  </style>
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
-<body data-theme="dark">
 
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">JS Interview Guide</div>
-        <div class="small">copy paste friendly · offline ready</div>
-      </div>
-
-      <div class="controls">
-        <div class="search" role="search" aria-label="Search questions">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="searchInput" placeholder="Search questions, keywords, functions..." aria-label="Search input">
-          <button id="clearSearch" title="Clear" style="background:none;border:0;color:var(--muted);cursor:pointer">✕</button>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">JS Interview Guide</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <svg class="sun-icon" width="24" height="24" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                </svg>
+                <svg class="moon-icon" width="24" height="24" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3"></path>
+                </svg>
+            </button>
         </div>
+    </nav>
 
-        <div style="width:8px"></div>
-
-        <button id="themeToggle" aria-label="Toggle theme" title="Toggle theme" style="background:transparent;border:0;cursor:pointer;color:var(--muted)">
-          🌗
-        </button>
-      </div>
-    </div>
-
-    <!-- sidebar: tabs + toc -->
-    <aside class="sidebar" aria-label="sidebar">
-      <div class="tabs" role="tablist">
-        <button class="tab active" data-tab="all">All</button>
-        <button class="tab" data-tab="concepts">Concepts</button>
-        <button class="tab" data-tab="algorithms">Algorithms</button>
-        <button class="tab" data-tab="system">System design</button>
-      </div>
-
-      <nav class="toc" id="toc">
-        <h4>Table of contents</h4>
-        <!-- generated TOC links will appear here -->
-      </nav>
-    </aside>
-
-    <!-- main reading surface -->
-    <main class="content" id="mainContent" tabindex="0">
-      <div class="meta">
-        <div class="left">
-          <div class="small">Loaded from README</div>
-        </div>
-        <div class="right">
-          <button id="refreshBtn" title="Reload content" style="background:transparent;border:0;color:var(--muted);cursor:pointer">⟳</button>
-        </div>
-      </div>
-
-      <div id="content" class="markdown-body" aria-live="polite">
-        <!-- markdown injected here -->
-      </div>
-
-      <div style="margin-top:18px" class="small">© 2025 JavaScript Interview Guide</div>
+    <main class="container">
+        <div id="content" class="markdown-body"></div>
     </main>
-  </div>
 
-  <button class="scroll-top" id="scrollTop" title="Scroll to top" style="display:none">↑</button>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 JavaScript Interview Guide | MIT License</p>
+            <p>Created by <a href="https://github.com/g-h-0-S-t" target="_blank">g-h-0-S-t</a></p>
+        </div>
+    </footer>
 
-  <!-- libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    window.mermaid = mermaid;
-    window.mermaid.initialize({ startOnLoad: false });
-    window.mermaid.run({
-      querySelector: ".mermaid"
+<script>
+/* --------------------------- THEME TOGGLE --------------------------- */
+const themeToggle = document.getElementById("themeToggle");
+const html = document.documentElement;
+
+const savedTheme = localStorage.getItem("theme") || "dark";
+html.setAttribute("data-theme", savedTheme);
+
+/* Update hljs theme instantly */
+document.getElementById("hljs-theme").href =
+    savedTheme === "dark"
+        ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+        : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+
+themeToggle.addEventListener("click", () => {
+    const current = html.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+
+    document.getElementById("hljs-theme").href =
+        next === "dark"
+            ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+            : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+});
+
+/* --------------------------- MARKED CONFIG --------------------------- */
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+    headerIds: true,
+    mangle: false,
+});
+
+/* Custom renderer to avoid [object Object] */
+const renderer = new marked.Renderer();
+
+renderer.code = function (code, lang) {
+    const language = (lang || "").trim().toLowerCase();
+
+    if (language === "mermaid") {
+        return `<pre class="mermaid">${code}</pre>`;
+    }
+
+    return `<pre><code class="language-${language}">${code.replace(/</g, "&lt;")}</code></pre>`;
+};
+
+marked.use({ renderer });
+
+/* --------------------------- LOAD README --------------------------- */
+async function loadReadme() {
+    const url = "https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md";
+
+    const res = await fetch(url);
+    const text = await res.text();
+
+    const html = marked.parse(text);
+    document.getElementById("content").innerHTML = html;
+
+    /*  Highlight Blocks (skip mermaid)  */
+    document.querySelectorAll("pre code").forEach(block => {
+        if (block.parentElement.classList.contains("mermaid")) return;
+        hljs.highlightElement(block);
     });
-  </script>
 
-  <!-- main app script -->
-  <script>
-  /* ========= App configuration ========= */
-  const RAW_README_URL = 'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
-  const CACHE_KEY = 'readme-cache-v2';
-  const SW_CACHE_NAME = 'js-interview-cache-v1';
-  const themeToggle = document.getElementById('themeToggle');
-  const body = document.body;
-  const contentEl = document.getElementById('content');
-  const searchInput = document.getElementById('searchInput');
-  const clearSearch = document.getElementById('clearSearch');
-  const tabs = document.querySelectorAll('.tab');
-  const toc = document.getElementById('toc');
-  const scrollTopBtn = document.getElementById('scrollTop');
-  const refreshBtn = document.getElementById('refreshBtn');
-
-  /* ======= theme handling ======= */
-  const storedTheme = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', storedTheme);
-  function updateHljs(theme){
-    const link = document.getElementById('hljs-theme');
-    if (link) {
-      link.href = theme === 'dark'
-        ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
-        : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
-    }
-  }
-  updateHljs(storedTheme);
-
-  themeToggle.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateHljs(next);
-    // update mermaid theme to neutral so it inherits text color
-    if (window.mermaid) window.mermaid.initialize({ theme: 'neutral' });
-    // re-render mermaid after theme change
-    requestAnimationFrame(() => { if (window.mermaid) window.mermaid.run({querySelector:'.mermaid'}); });
-  });
-
-  /* ======= marked renderer fixing for mermaid & code blocks ======= */
-  marked.use({
-    renderer: {
-      code(code, lang) {
-        // Mermaid blocks must not be escaped
-        if (lang === "mermaid") {
-          return `
-            <div class="mermaid">
-              ${code}
-            </div>
-          `;
+    /* Mermaid fix: run AFTER markdown injected */
+    setTimeout(() => {
+        if (window.mermaid) {
+            mermaid.run({ querySelector: ".mermaid" });
         }
-  
-        // Normal code blocks (JavaScript, HTML, CSS etc)
-        const highlighted =
-          window.hljs.getLanguage(lang)
-            ? hljs.highlight(code, { language: lang }).value
-            : hljs.highlightAuto(code).value;
-  
-        return `
-          <pre><code class="hljs language-${lang}">
-            ${highlighted}
-          </code></pre>
-        `;
-      }
-    }
-  });
+    }, 300);
+}
 
+loadReadme();
 
-  function escapeHtml(unsafe){
-    // defensive: coerce to string (marked sometimes passes non-string)
-    const s = unsafe === undefined || unsafe === null ? '' : String(unsafe);
-    return s.replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  }
-
-
-  /* ======= copy button logic (reused) ======= */
-  function addCopyButton(preElement){
-    if (!preElement || preElement.dataset.copied) return;
-    preElement.dataset.copied = "true";
-    const btn = document.createElement('button');
-    btn.className = 'copy-button';
-    btn.type = 'button';
-    btn.textContent = 'Copy';
-    btn.addEventListener('click', async (e) => {
-      const codeEl = preElement.querySelector('code');
-      if (!codeEl) return;
-      const codeText = codeEl.textContent;
-      try {
-        await navigator.clipboard.writeText(codeText);
-        btn.textContent = 'Copied!';
-        btn.style.background = 'var(--accent)';
-        btn.style.color = 'var(--bg-primary)';
-        setTimeout(()=>{ btn.textContent='Copy'; btn.removeAttribute('style'); }, 1300);
-      } catch (err){
-        btn.textContent = 'Error';
-        setTimeout(()=> btn.textContent='Copy', 1200);
-      }
-    });
-    preElement.appendChild(btn);
-  }
-
-  /* ======= mermaid & highlighting pipeline ======= */
-  async function renderEnhancements(){
-    // 1) run mermaid for all .mermaid blocks
-    if (window.mermaid) {
-      try {
-        window.mermaid.run({ querySelector: '.mermaid' });
-      } catch (e) {
-        // mermaid occasionally throws on complex graphs; ignore
-        console.warn('mermaid.render error', e);
-      }
-    }
-
-    // 2) highlight code blocks and add copy buttons
-    // do in microtask so DOM paint isn't blocked
-    queueMicrotask(() => {
-      document.querySelectorAll('pre code').forEach((block) => {
-        // skip mermaid rendered code
-        if (block.closest('.mermaid')) return;
-        if (!block.dataset.highlighted) {
-          try { hljs.highlightElement(block); } catch(e){}
-          block.dataset.highlighted = 'true';
-        }
-        addCopyButton(block.parentElement);
-      });
-    });
-  }
-
-  /* ======= Load README (with caching & fast path) ======= */
-  async function loadReadme(force=false){
-    try {
-      if (!force) {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          contentEl.innerHTML = marked.parse(cached);
-          await renderEnhancements();
-          generateTOC();
-          return;
-        }
-      }
-
-      const res = await fetch(RAW_README_URL);
-      if (!res.ok) throw new Error('Failed to fetch README');
-      const md = await res.text();
-      localStorage.setItem(CACHE_KEY, md);
-      contentEl.innerHTML = marked.parse(md);
-      await renderEnhancements();
-      generateTOC();
-    } catch (err) {
-      console.error(err);
-      contentEl.innerHTML = '<p class="small">Failed to load content. Try refresh.</p>';
-    }
-  }
-
-  /* ======= TOC generation & hash link handling ======= */
-  function generateTOC(){
-    // build heading list (h1-h3) in content
-    const headings = Array.from(contentEl.querySelectorAll('h1, h2, h3'));
-    const ul = document.createElement('div');
-    ul.innerHTML = '<h4>Table of contents</h4>';
-    headings.forEach(h => {
-      if (!h.id) {
-        // create safe id
-        const id = h.textContent.trim().toLowerCase().replace(/[^\w]+/g, '-').replace(/^-|-$/g,'');
-        h.id = id || `heading-${Math.random().toString(36).slice(2,8)}`;
-      }
-      const a = document.createElement('a');
-      a.href = `#${h.id}`;
-      a.textContent = h.textContent;
-      a.addEventListener('click', (e) => {
+/* --------------------------- SMOOTH ANCHORS --------------------------- */
+document.addEventListener("click", (e) => {
+    if (e.target.matches('a[href^="#"]')) {
         e.preventDefault();
-        document.getElementById(h.id).scrollIntoView({behavior:'smooth', block:'start'});
-        history.replaceState(null, '', `#${h.id}`);
-        // mark active
-        document.querySelectorAll('#toc a').forEach(x => x.classList.remove('active'));
-        a.classList.add('active');
-      });
-      ul.appendChild(a);
-    });
-    // replace toc contents
-    toc.innerHTML = '';
-    toc.appendChild(ul);
-    // create collapsible wrappers for each major question heading automatically
-    wrapQuestions();
-  }
-
-  /* ======= wrap question headings into <details> for collapsible behaviour ======= */
-  function wrapQuestions(){
-    // we will wrap each h3 and following nodes until next h3 into details.question
-    const nodes = Array.from(contentEl.childNodes);
-    const container = document.createDocumentFragment();
-    let i = 0;
-    while (i < nodes.length){
-      const node = nodes[i];
-      if (node.nodeType === 1 && node.matches && node.matches('h3')) {
-        // create detail
-        const detail = document.createElement('details');
-        detail.className = 'question';
-        const summary = document.createElement('summary');
-        const titleSpan = document.createElement('span');
-        titleSpan.className = 'q-title';
-        titleSpan.textContent = node.textContent;
-        const chevron = document.createElement('span');
-        chevron.className = 'small';
-        chevron.textContent = '+';
-        summary.appendChild(titleSpan);
-        summary.appendChild(chevron);
-        detail.appendChild(summary);
-
-        // gather following siblings until next h3/h2/h1
-        i++;
-        const body = document.createElement('div');
-        body.className = 'q-body';
-        while (i < nodes.length){
-          const nxt = nodes[i];
-          if (nxt.nodeType===1 && (nxt.matches('h3') || nxt.matches('h2') || nxt.matches('h1'))) break;
-          // move node into body
-          body.appendChild(nxt.cloneNode(true));
-          i++;
-        }
-        detail.appendChild(body);
-        container.appendChild(detail);
-      } else {
-        // if h1/h2 leave as-is (e.g., sections) or plain nodes
-        container.appendChild(node.cloneNode(true));
-        i++;
-      }
+        const id = e.target.getAttribute("href");
+        const el = document.querySelector(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    // replace content
-    contentEl.innerHTML = '';
-    contentEl.appendChild(container);
+});
+</script>
 
-    // Add toggle chevron behavior and open states for search highlighting
-    document.querySelectorAll('details.question summary').forEach(s => {
-      s.addEventListener('click', function(){
-        const ch = this.querySelector('.small');
-        if (this.parentElement.open) {
-          ch.textContent = '+';
-        } else {
-          ch.textContent = '-';
-        }
-      });
-    });
-
-    // re-run enhancements (code blocks may have moved)
-    renderEnhancements();
-  }
-
-  /* ======= search filtering ======= */
-  function doSearch(q){
-    const needle = (q||'').trim().toLowerCase();
-    const details = contentEl.querySelectorAll('details.question');
-    if (!needle){
-      details.forEach(d => { d.style.display=''; d.open=false; });
-      return;
-    }
-    details.forEach(d => {
-      const txt = d.textContent.toLowerCase();
-      if (txt.includes(needle)) {
-        d.style.display='';
-        d.open = true;
-        // highlight matches very lightly
-        // naive: wrap match in <mark> - keep simple & idempotent by not double-wrapping
-        if (!d.dataset.highlighted) {
-          // set a flag to avoid multiple wrapping across searches
-          d.dataset.highlighted = 'true';
-        }
-      } else {
-        d.style.display='none';
-      }
-    });
-  }
-
-  searchInput.addEventListener('input', (e) => {
-    const v = e.target.value;
-    doSearch(v);
-  });
-  clearSearch.addEventListener('click', () => { searchInput.value=''; searchInput.focus(); doSearch(''); });
-
-  /* ======= tabs filtering (client-side) ======= */
-  tabs.forEach(t => t.addEventListener('click', () => {
-    tabs.forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    const category = t.dataset.tab;
-    // simple client side classification: look for keywords in question title/body
-    document.querySelectorAll('details.question').forEach(d => {
-      const txt = d.textContent.toLowerCase();
-      if (category === 'all') { d.style.display=''; return; }
-      if (category === 'concepts') {
-        d.style.display = (txt.match(/closure|hoist|event loop|gc|polymorphism|abstraction|encapsulation|design pattern|solid|http|https|hash table/)) ? '' : 'none';
-      } else if (category === 'algorithms') {
-        d.style.display = (txt.match(/linked list|quicksort|bfs|dfs|dynamic programming|fibonacci|kth|merge lists|kth largest|find|max|palindrome/)) ? '' : 'none';
-      } else if (category === 'system') {
-        d.style.display = (txt.match(/url shortening|system design|deadlock|sql|cap theorem|scaling|throughput/)) ? '' : 'none';
-      } else {
-        d.style.display = '';
-      }
-    });
-  }));
-
-  /* ======= scroll top button ======= */
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) { scrollTopBtn.style.display = 'block'; }
-    else { scrollTopBtn.style.display = 'none'; }
-  });
-  scrollTopBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-
-  /* ======= refresh button ======= */
-  refreshBtn.addEventListener('click', ()=> loadReadme(true));
-
-  /* ======= Service worker registration ======= */
-  if ('serviceWorker' in navigator) {
-    (async () => {
-      try {
-        const reg = await navigator.serviceWorker.register('/sw.js');
-        console.log('Service worker registered', reg.scope);
-      } catch (err) {
-        // don't break the app if sw is missing or registration fails
-        console.warn('Service worker registration failed:', err);
-      }
-    })();
-  }
-
-  /* ======= initial load ======= */
-  loadReadme();
-
-  /* ======= utilities ======= */
-  function debounce(fn, wait=200){
-    let t;
-    return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), wait); };
-  }
-  </script>
 </body>
 </html>
+<!-- {% endraw %} -->
