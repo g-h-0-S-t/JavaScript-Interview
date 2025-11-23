@@ -36,10 +36,10 @@ themeToggle.addEventListener('click', () => {
 // Configure marked.js custom renderer for Mermaid diagrams (global scope)
 marked.use({
         renderer: {
-                    code(code, infostring) {
-                                        console.log('Mermaid renderer - infostring:', infostring, 'trimmed:', (infostring || '').trim());
-                                    if ((infostring || '').trim() === 'mermaid') {
-                                                        return `<div class="mermaid">${code}</div>`;
+                    code(token) {
+                                        console.log('Mermaid renderer - token.lang:', token.lang, 'trimmed:', (token.lang || '').trim());
+                                    if ((token.lang || '').trim() === 'mermaid') {
+                                                        return `<div class="mermaid">${token.text}</div>`;
                                                     }
                                         return false; // Use default renderer for non-mermaid blocks
                                 }
