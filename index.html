@@ -12,8 +12,10 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-
+<script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      window.mermaid = mermaid;
+    </script>
   <style>
     :root {
       --bg-dark: #0d1117;
@@ -309,12 +311,10 @@
     });
 
     // Marked + renderer to avoid [object Object]
-    marked.setOptions({ gfm: true, breaks: true });
 
     function safeHighlight(code, lang) {
       const s = String(code || '');
-      try {
-        if (lang && hljs.getLanguage(lang)) {
+marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang && hljs.getLanguage(lang)) {
           return hljs.highlight(s, { language: lang }).value;
         }
         return hljs.highlightAuto(s).value;
