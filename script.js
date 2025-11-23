@@ -115,6 +115,7 @@ function clearHighlights(el) {
     const parent = mark.parentNode;
     parent.replaceChild(document.createTextNode(mark.textContent), mark);
   });
+     el.normalize();
 }
 
 // Highlight search term in element
