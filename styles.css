@@ -43,7 +43,7 @@ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,-apple-syst
 
 .pdf-btn{background:var(--accent);color:var(--bg-dark);border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
 .app{max-width:var(--max-width);margin:0 auto;padding:calc(var(--header-height) + 18px) 18px 64px}
-.markdown-body{padding:8px 0;max-width:100%}
+.markdown-body{background:var(--bg-dark);color:var(--text);padding:8px 0;max-width:100%}
 
 pre{background:var(--code-bg);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);overflow:auto;position:relative;margin:14px 0}
 pre code{display:block;white-space:pre;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,"Roboto Mono",monospace;font-size:0.93rem;line-height:1.45}
