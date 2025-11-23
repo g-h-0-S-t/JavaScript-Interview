@@ -12,10 +12,11 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      window.mermaid = mermaid;
-    </script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    window.mermaid = mermaid;
+  </script>
+
   <style>
     :root {
       --bg-dark: #0d1117;
@@ -35,212 +36,108 @@
       --accent: #0969da;
       --code-bg: #f6f8fa;
     }
-
     html, body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background: var(--bg-dark);
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
     }
-
-    /* Fixed header full width */
     .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      position: fixed; top: 0; left: 0; right: 0;
       height: var(--header-height);
       backdrop-filter: blur(8px);
       background: linear-gradient(180deg, rgba(13,17,23,0.92), rgba(13,17,23,0.78));
       border-bottom: 1px solid rgba(255,255,255,0.03);
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       z-index: 9999;
     }
     [data-theme="light"] .site-header {
       background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
       border-color: #d0d7de;
     }
-
     .site-header .inner {
-      max-width: 1100px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 0 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      max-width: 1100px; width:100%; margin:0 auto; padding:0 18px;
+      display:flex; align-items:center; gap:12px;
     }
-
     .brand {
-      font-weight: 700;
-      color: var(--accent);
-      flex: 0 0 auto;
-      font-size: 1rem;
+      font-weight:700; color:var(--accent); flex:0 0 auto; font-size:1rem;
     }
-
     .search-bar {
-      flex: 1 1 auto;
-      display: flex;
-      align-items: center;
-      background: var(--panel);
-      border-radius: 10px;
-      padding: 8px 12px;
-      border: 1px solid rgba(255,255,255,0.03);
+      flex:1 1 auto; display:flex; align-items:center;
+      background:var(--panel); border-radius:10px; padding:8px 12px;
+      border:1px solid rgba(255,255,255,0.03);
     }
-    [data-theme="light"] .search-bar {
-      border-color: #dfe6ec;
-    }
-    .search-bar svg {
-      flex: 0 0 16px;
-      opacity: .9;
-    }
+    [data-theme="light"] .search-bar { border-color:#dfe6ec; }
+    .search-bar svg{flex:0 0 16px; opacity:.9;}
     .search-bar input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      font-size: 0.96rem;
-      outline: none;
-      padding: 4px 0;
+      flex:1; border:0; background:transparent; color:var(--text);
+      font-size:0.96rem; outline:none; padding:4px 0;
     }
-
     .controls {
-      flex: 0 0 auto;
-      display: flex;
-      gap: 10px;
-      align-items: center;
+      flex:0 0 auto; display:flex; align-items:center; gap:10px;
     }
-
     .theme-toggle {
-      width: 40px;
-      height: 40px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      display: inline-grid;
-      place-items: center;
-      padding: 0;
-      color: var(--text);
+      width:40px; height:40px; border:0; background:transparent;
+      cursor:pointer; display:inline-grid; place-items:center;
+      color:var(--text);
     }
-    .theme-toggle .svg-wrap {
-      position: relative;
-      width: 22px;
-      height: 22px;
-    }
+    .theme-toggle .svg-wrap { position:relative; width:22px; height:22px; }
     .theme-toggle svg {
-      position: absolute;
-      inset: 0;
-      width: 22px;
-      height: 22px;
+      position:absolute; inset:0; width:22px; height:22px;
       transition: transform .25s cubic-bezier(.2,.9,.2,1), opacity .22s ease-in-out;
-      transform-origin: center;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.4;
+      transform-origin:center; stroke:currentColor; fill:none; stroke-width:1.4;
     }
-    .theme-toggle .sun {
-      transform: scale(.8);
-      opacity: 0;
-    }
-    .theme-toggle .moon {
-      transform: scale(1);
-      opacity: 1;
-    }
-    [data-theme="light"] .theme-toggle .sun {
-      transform: scale(1);
-      opacity: 1;
-    }
-    [data-theme="light"] .theme-toggle .moon {
-      transform: scale(.8);
-      opacity: 0;
-    }
-
+    .theme-toggle .sun { transform: scale(.8); opacity:0; }
+    .theme-toggle .moon { transform: scale(1); opacity:1; }
+    [data-theme="light"] .theme-toggle .sun { transform: scale(1); opacity:1; }
+    [data-theme="light"] .theme-toggle .moon { transform: scale(.8); opacity:0; }
     .pdf-btn {
-      background: var(--accent);
-      color: var(--bg-dark);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
+      background:var(--accent); color:var(--bg-dark); border:0;
+      padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600;
     }
-
     .app {
-      max-width: 1100px;
-      margin: 0 auto;
+      max-width:1100px; margin:0 auto;
       padding: calc(var(--header-height) + 18px) 18px 64px;
     }
-
     .markdown-body {
-      padding: 8px 0;
-      max-width: 100%;
+      padding:8px 0; max-width:100%;
     }
-
     pre {
-      background: var(--code-bg);
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.03);
-      overflow: auto;
-      position: relative;
-      margin: 14px 0;
+      background:var(--code-bg); padding:14px; border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03); overflow:auto; position:relative; margin:14px 0;
     }
     pre code {
-      display: block;
-      white-space: pre;
+      display:block; white-space:pre;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size: 0.93rem;
-      line-height: 1.45;
+      font-size:0.93rem; line-height:1.45;
     }
     .copy-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: var(--panel);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.04);
-      padding: 6px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
+      position:absolute; top:8px; right:8px;
+      background:var(--panel); color:var(--text);
+      border:1px solid rgba(255,255,255,0.04); padding:6px 8px; border-radius:6px;
+      cursor:pointer; font-size:12px;
     }
-
     mark.search-hit {
-      background: #fff18a;
-      color: #000;
-      padding: 0 2px;
-      border-radius: 2px;
+      background:#fff18a; color:#000; padding:0 2px; border-radius:2px;
     }
-
-    .muted {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
+    .muted { color:var(--muted); font-size:0.9rem; }
     @media (max-width:720px) {
-      .brand { display: none; }
-      .search-bar input { font-size: 0.9rem; }
-      .pdf-btn { display: none; }
+      .brand { display:none; }
+      .search-bar input{ font-size:0.9rem; }
+      .pdf-btn { display:none; }
     }
-
     @media print {
-      .site-header, .controls, .copy-btn { display: none !important; }
-      body { background: white; color: black; }
-      pre { background: transparent !important; border: none !important; padding: 0 !important; }
-      .app { padding: 0; margin: 0; }
-      .markdown-body { padding: 0; }
+      .site-header, .controls, .copy-btn { display:none !important; }
+      body{ background:white; color:black; }
+      pre{ background:transparent !important; border:none !important; padding:0 !important; }
+      .app{ padding:0; margin:0; }
+      .markdown-body{ padding:0; }
     }
   </style>
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0d1117">
-</head>
 
+</head>
 <body>
 
   <header class="site-header" role="banner">
@@ -259,9 +156,7 @@
         <button id="pdfBtn" class="pdf-btn" title="Print / Save as PDF">Download PDF</button>
         <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
           <span class="svg-wrap">
-            <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle>
-              <g><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g>
-            </svg>
+            <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><g><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg>
             <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
           </span>
         </button>
@@ -301,8 +196,8 @@
       }
     }
 
-    const saved = localStorage.getItem('site-theme') || 'dark';
-    applyTheme(saved);
+    const savedTheme = localStorage.getItem('site-theme') || 'dark';
+    applyTheme(savedTheme);
 
     document.getElementById('themeToggle').addEventListener('click', () => {
       const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -311,16 +206,18 @@
     });
 
     // Marked + renderer to avoid [object Object]
+    marked.setOptions({ gfm: true, breaks: true });
 
     function safeHighlight(code, lang) {
       const s = String(code || '');
-marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang && hljs.getLanguage(lang)) {
+      try {
+        if (lang && hljs.getLanguage(lang)) {
           return hljs.highlight(s, { language: lang }).value;
         }
         return hljs.highlightAuto(s).value;
       } catch (e) {
         console.warn('highlight error', e);
-        return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+        return s.replace(/[&<>]/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;'}[c]));
       }
     }
 
@@ -329,12 +226,9 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
     renderer.code = function(code, infostring) {
       const lang = (infostring || '').trim().toLowerCase();
       const text = String(code || '');
-
       if (lang === 'mermaid') {
-        // return a container div / pre with class so Mermaid can pick it up
-        return '<pre class="mermaid">' + text + '</pre>';
+        return '<div class="mermaid">' + text + '</div>';
       }
-
       const highlighted = safeHighlight(text, lang);
       return '<pre><code class="hljs language-' + lang + '">' + highlighted + '</code></pre>';
     };
@@ -353,7 +247,6 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
 
     marked.use({ renderer });
 
-    // Load README
     const RAW = 'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
     let fullMd = '';
 
@@ -367,24 +260,17 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
       const html = marked.parse(fullMd);
       document.getElementById('content').innerHTML = html;
 
-      // Apply highlight
       document.querySelectorAll('pre code').forEach(block => {
-        try { hljs.highlightElement(block); } catch (e) { console.warn(e); }
+        try { hljs.highlightElement(block); } catch (e) {}
       });
 
-      // Render mermaid
-      try {
-        mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-      } catch (e) {
-        console.warn('Mermaid render error', e);
-      }
+      try { mermaid.init(undefined, document.querySelectorAll('.mermaid')); } catch (e) {}
 
       attachCopyButtons();
     }
 
     loadReadme();
 
-    // Copy buttons
     function attachCopyButtons() {
       document.querySelectorAll('pre').forEach(pre => {
         if (pre.querySelector('.copy-btn')) return;
@@ -398,10 +284,10 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
           try {
             await navigator.clipboard.writeText(codeEl.innerText);
             btn.textContent = 'Copied!';
-            setTimeout(() => btn.textContent = 'Copy', 1200);
+            setTimeout(()=> btn.textContent = 'Copy', 1200);
           } catch (e) {
             btn.textContent = 'Error';
-            setTimeout(() => btn.textContent = 'Copy', 1200);
+            setTimeout(()=> btn.textContent = 'Copy', 1200);
           }
         });
         pre.appendChild(btn);
@@ -410,11 +296,11 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
 
     const contentEl = document.getElementById('content');
     const mo = new MutationObserver(() => attachCopyButtons());
-    mo.observe(contentEl, { childList: true, subtree: true });
+    mo.observe(contentEl, { childList:true, subtree:true });
 
-    // Search & highlight
     const searchInput = document.getElementById('searchInput');
     let searchTimer;
+
     function clearMarks(root) {
       root.querySelectorAll('mark.search-hit').forEach(m => {
         const p = m.parentNode;
@@ -422,35 +308,33 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
         p.normalize();
       });
     }
+
     function highlightMatches(root, q) {
       if (!q) return 0;
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
-      let node;
-      let first = null;
+      let node, first = null;
       while (node = walker.nextNode()) {
         const parent = node.parentNode;
-        if (!parent || parent.closest('pre') || parent.classList.contains('mermaid')) continue;
-        const text = node.nodeValue;
-        const low = text.toLowerCase();
-        const index = low.indexOf(q.toLowerCase());
-        if (index === -1) continue;
+        if (!parent || parent.closest('pre') || parent.closest('.mermaid')) continue;
+        const text = node.nodeValue, low = text.toLowerCase();
+        const idx = low.indexOf(q.toLowerCase());
+        if (idx === -1) continue;
         const frag = document.createDocumentFragment();
-        let last = 0;
-        let idx = index;
-        while (idx !== -1) {
-          if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
+        let last = 0, currIdx = idx;
+        while (currIdx !== -1) {
+          if (currIdx > last) frag.appendChild(document.createTextNode(text.slice(last, currIdx)));
           const mark = document.createElement('mark');
           mark.className = 'search-hit';
-          mark.textContent = text.slice(idx, idx + q.length);
+          mark.textContent = text.slice(currIdx, currIdx + q.length);
           frag.appendChild(mark);
           if (!first) first = mark;
-          last = idx + q.length;
-          idx = text.toLowerCase().indexOf(q.toLowerCase(), last);
+          last = currIdx + q.length;
+          currIdx = text.toLowerCase().indexOf(q.toLowerCase(), last);
         }
         if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
         parent.replaceChild(frag, node);
       }
-      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     }
 
     searchInput.addEventListener('input', e => {
@@ -459,18 +343,18 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
       searchTimer = setTimeout(() => {
         if (!q) {
           contentEl.innerHTML = marked.parse(fullMd);
-          try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e) {}
+          try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
           attachCopyButtons();
           return;
         }
         const blocks = fullMd.split(/\n{2,}/).filter(b => b.toLowerCase().includes(q.toLowerCase()));
         const mdOut = blocks.join('\n\n') || `> No results for "${q}"`;
         contentEl.innerHTML = marked.parse(mdOut);
-        try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e) {}
+        try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
         attachCopyButtons();
         clearMarks(contentEl);
         highlightMatches(contentEl, q);
-      }, 200);
+      },200);
     });
 
     searchInput.addEventListener('keydown', e => {
@@ -480,19 +364,10 @@ marked.setOptions({ gfm: true, breaks: true, async: false });        if (lang &&
       }
     });
 
-    // PDF via print
     document.getElementById('pdfBtn').addEventListener('click', () => {
       window.print();
     });
-    
-  // Service Worker Registration
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registered', reg))
-        .catch(err => console.log('Service Worker registration failed', err));
-    });
-  }
   </script>
+
 </body>
 </html>
