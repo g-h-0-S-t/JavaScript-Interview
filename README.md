@@ -278,15 +278,15 @@ graph TB
     MicroQueue -.-> ProcessBlock4 -.-> CallStack
     MacroQueue -.-> ProcessBlock5 -.-> CallStack
     
-    style CallStack fill:#0366d6,stroke:#0366d6,stroke-width:2px
-    style MicroQueue fill:#d68400,stroke:#d68400,stroke-width:2px
-    style MacroQueue fill:#d6006e,stroke:#d6006e,stroke-width:2px
-    style EventLoop fill:green,stroke:green,stroke-width:2px
-    style ProcessBlock1 fill:light-blue,stroke:light-blue,stroke-width:2px
-    style ProcessBlock2 fill:light-blue,stroke:light-blue,stroke-width:2px
-    style ProcessBlock3 fill:light-blue,stroke:light-blue,stroke-width:2px
-    style ProcessBlock4 fill:light-blue,stroke:light-blue,stroke-width:2px
-    style ProcessBlock5 fill:light-blue,stroke:light-blue,stroke-width:2px
+    style CallStack fill:#0366d6,stroke:#0366d6,stroke-width:2px,color:#000
+    style MicroQueue fill:#d68400,stroke:#d68400,stroke-width:2px,color:#000
+    style MacroQueue fill:#d6006e,stroke:#d6006e,stroke-width:2px,color:#000
+    style EventLoop fill:green,stroke:green,stroke-width:2px,color:#000
+    style ProcessBlock1 fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,color:#000
+    style ProcessBlock2 fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,color:#000
+    style ProcessBlock3 fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,color:#000
+    style ProcessBlock4 fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,color:#000
+    style ProcessBlock5 fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,color:#000
 ```
 
 ***
