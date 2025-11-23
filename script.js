@@ -134,6 +134,7 @@ searchInput.addEventListener("input", () => {
     matchElements[0].classList.add('active');
     matchElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+   });
 
                              // Handle Enter key to cycle through matches
 searchInput.addEventListener("keydown", (e) => {
