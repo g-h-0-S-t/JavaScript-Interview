@@ -54,6 +54,11 @@ mark.search-hit{background:#39FF14;color:#000;padding:0 2px;border-radius:2px}.m
 /* mermaid svg text tweaks to inherit theme color */
 .mermaid{display:flex;justify-content:center;margin:20px 0}
 
+.hljs {
+    color: green;
+    background: transparent;
+}
+
 /* responsive */
 @media (max-width:720px){
   .brand{display:none}
