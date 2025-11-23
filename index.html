@@ -5,26 +5,23 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>JavaScript Interview Guide</title>
 
-  <!-- GitHub markdown styles -->
+  <!-- GitHub markdown CSS (we switch for print/theme) -->
   <link id="md-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css">
 
   <!-- highlight.js -->
   <link id="hljs-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-  <!-- marked -->
+  <!-- marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- mermaid -->
+  <!-- mermaid (global) -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-
-  <!-- html2pdf (bundle includes html2canvas + jspdf) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
   <style>
     :root{
       --bg-dark:#0d1117;
-      --bg-panel:#0f1720;
+      --panel:#0f1720;
       --text:#c9d1d9;
       --muted:#8b949e;
       --accent:#58a6ff;
@@ -32,165 +29,153 @@
       --code-bg:#0b1220;
     }
     [data-theme="light"]{
-      --bg-dark:#ffffff;
-      --bg-panel:#f6f8fa;
+      --bg-dark:#fff;
+      --panel:#f6f8fa;
       --text:#24292f;
       --muted:#57606a;
       --accent:#0969da;
       --code-bg:#f6f8fa;
     }
 
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:var(--text);background:var(--bg-dark);-webkit-font-smoothing:antialiased}
-    .app{max-width:1100px;margin:0 auto;padding:0 16px 64px}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--bg-dark);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.45}
+    .app{max-width:1100px;margin:0 auto;padding:18px}
 
-    /* sticky header */
-    .header{
-      position:sticky;top:0;z-index:1100;backdrop-filter:blur(8px);
-      background: linear-gradient(180deg, rgba(13,17,23,0.86), rgba(13,17,23,0.70));
-      border-bottom:1px solid rgba(255,255,255,0.03);
-      display:flex;align-items:center;gap:12px;padding:10px 16px;
-      margin-bottom:18px;
+    /* Permanent sticky header */
+    .header-wrap {
+      position:sticky; top:0; z-index:9999;
+      backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(13,17,23,0.88), rgba(13,17,23,0.72));
+      border-bottom: 1px solid rgba(255,255,255,0.03);
     }
-    [data-theme="light"] .header{
-      background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.85));
-      border-color: #d0d7de;
+    [data-theme="light"] .header-wrap {
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88));
+      border-color:#d0d7de;
+    }
+    .header {
+      max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 18px;
     }
 
-    .brand{font-weight:700;color:var(--accent);margin-right:8px}
-    .header-left{display:flex;align-items:center;gap:12px;flex:1}
-    .search{
-      display:flex;align-items:center;background:var(--bg-panel);border-radius:8px;padding:6px 8px;border:1px solid rgba(255,255,255,0.03);min-width:180px;flex:1;
+    .brand { font-weight:700; color:var(--accent); margin-right:10px }
+    .search {
+      display:flex;align-items:center;gap:8px;background:var(--panel);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.03);flex:1;
     }
-    .search input{background:transparent;border:0;outline:none;color:var(--text);width:100%;padding:6px;font-size:0.95rem}
-    .controls{display:flex;gap:8px;align-items:center}
+    [data-theme="light"] .search{ background: #fff; border-color: #dfe6ec; }
+    .search input{background:transparent;border:0;outline:0;color:var(--text);font-size:0.95rem;min-width:200px}
+    .controls{display:flex;align-items:center;gap:8px}
 
     /* theme toggle */
     .toggle-btn{
-      width:40px;height:36px;border-radius:8px;border:0;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+      width:40px;height:36px;border-radius:8px;border:0;background:transparent;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
     }
-    .icon{width:20px;height:20px;display:block;transition:transform .25s ease, opacity .25s}
+    .toggle-btn svg{width:18px;height:18px;display:block;stroke:currentColor;fill:none;transition:transform .18s ease, opacity .18s}
 
-    /* header mobile adjustments */
-    @media (max-width:640px){
-      .brand{font-size:0.95rem}
-      .search input{font-size:0.9rem}
-    }
+    /* buttons */
+    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .pdf-btn{background:var(--accent);color:var(--bg-dark)}
 
     /* content */
-    .content{background:transparent;padding:0 0 40px}
-    .markdown-body{padding:6px 0;max-width:100%}
+    .content{padding-top:12px}
+    .markdown-body{padding:8px 0;max-width:100%}
 
-    /* code blocks */
-    pre{background:var(--code-bg);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);overflow:auto;position:relative;margin:14px 0}
-    pre code{white-space:pre;display:block;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace}
-    .copy-btn{position:absolute;top:8px;right:8px;background:var(--bg-panel);color:var(--text);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px;opacity:0.95}
+    /* code blocks and copy */
+    pre{background:var(--code-bg);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);overflow:auto;position:relative;margin:14px 0}
+    pre code{display:block;white-space:pre; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace}
+    .copy-btn{position:absolute;top:8px;right:8px;background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px}
 
     /* search highlight */
-    mark.search-hit{background: #fff18a;color:#000;padding:0 2px;border-radius:2px}
+    mark.search-hit{background:#fff18a;color:#000;padding:0 2px;border-radius:2px}
 
-    /* pdf button */
-    .pdf-btn{background:var(--accent);color:var(--bg-dark);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    /* responsive */
+    @media (max-width:640px){
+      .header{flex-wrap:wrap;gap:8px}
+      .brand{font-size:0.95rem}
+      .search input{font-size:0.92rem}
+    }
 
-    /* small utilities */
-    .muted{color:var(--muted);font-size:0.9rem}
+    /* PRINT: clean PDF (hide header, controls, copy buttons) */
+    @media print {
+      body{background:#fff;color:#000}
+      .header-wrap, .controls, .copy-btn, .pdf-btn { display:none !important }
+      .app{padding:0}
+      .markdown-body{padding:0;margin:0}
+      pre{background:transparent;border:0;padding:0}
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="header-left">
-      <div class="brand">JS Interview Guide</div>
-
-      <div class="search" role="search" aria-label="Search site">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.9;margin-right:8px"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="1.5"/></svg>
-        <input id="searchInput" placeholder="Search the site (press Esc to clear)"/>
+  <!-- Header always sticky -->
+  <div class="header-wrap" role="banner">
+    <header class="header" role="navigation">
+      <div style="display:flex;align-items:center;gap:12px;flex:1">
+        <div class="brand">JS Interview Guide</div>
+        <div class="search" role="search" aria-label="Search site">
+          <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.9"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.4" fill="none"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="1.4"/></svg>
+          <input id="searchInput" placeholder="Search the site (Esc to clear)"/>
+        </div>
       </div>
-    </div>
 
-    <div class="controls" role="toolbar" aria-label="controls">
-      <button id="pdfBtn" class="pdf-btn" title="Download full site as PDF">Download PDF</button>
+      <div class="controls" role="toolbar" aria-label="Controls">
+        <button id="pdfBtn" class="btn pdf-btn" title="Download as PDF">Download PDF</button>
 
-      <button id="themeToggle" class="toggle-btn" aria-label="Toggle theme" title="Toggle theme">
-        <!-- sun -->
-        <svg id="sunIcon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="opacity:0;transform:scale(.8)">
-          <circle cx="12" cy="12" r="4"></circle>
-          <g stroke-width="1.6">
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </g>
-        </svg>
-
-        <!-- moon -->
-        <svg id="moonIcon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="opacity:1;transform:scale(1)">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-    </div>
+        <button id="themeToggle" class="toggle-btn" aria-label="Toggle theme" title="Toggle theme">
+          <!-- moon (visible by default in dark) -->
+          <svg id="moonIcon" viewBox="0 0 24 24" style="opacity:1"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.4"/></svg>
+          <!-- sun -->
+          <svg id="sunIcon" viewBox="0 0 24 24" style="opacity:0;transform:scale(.85);margin-left:-24px"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.4"/><g stroke="currentColor" stroke-width="1.4"><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg>
+        </button>
+      </div>
+    </header>
   </div>
 
-  <main class="app">
-    <div class="content">
-      <article id="content" class="markdown-body">
-        <h2>Loading content…</h2>
-      </article>
-    </div>
+  <main class="app" role="main">
+    <article id="content" class="markdown-body">
+      <h3>Loading README...</h3>
+    </article>
   </main>
 
 <script>
-/* --------------------- Safe initialisation --------------------- */
+/* ====== Safe initializations ====== */
 mermaid.initialize({ startOnLoad:false, theme: 'neutral' });
 
-/* ---- theme handling with nice icon transitions ---- */
+/* theme icons visibility */
 const root = document.documentElement;
-const themeToggle = document.getElementById('themeToggle');
-const sun = document.getElementById('sunIcon');
-const moon = document.getElementById('moonIcon');
+const sunIcon = document.getElementById('sunIcon');
+const moonIcon = document.getElementById('moonIcon');
+const mdCss = document.getElementById('md-css');
+const hljsCss = document.getElementById('hljs-css');
 
-function applyTheme(t){
+function setTheme(t){
   root.setAttribute('data-theme', t);
-  // swap icons with smooth animation
-  if (t === 'light'){ sun.style.opacity = '1'; sun.style.transform='scale(1)'; moon.style.opacity='0'; moon.style.transform='scale(.8)'; }
-  else { moon.style.opacity = '1'; moon.style.transform='scale(1)'; sun.style.opacity='0'; sun.style.transform='scale(.8)'; }
-
-  // update CSS files for markdown & highlight for better contrast
-  document.getElementById('md-css')?.setAttribute('href', t === 'dark'
-    ? 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css'
-    : 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css');
-
-  document.getElementById('hljs-css')?.setAttribute('href', t === 'dark'
-    ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
-    : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+  if (t === 'light'){
+    sunIcon.style.opacity = '1'; sunIcon.style.transform='scale(1)'; moonIcon.style.opacity='0'; moonIcon.style.transform='scale(.85)';
+    if (mdCss) mdCss.href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css';
+    if (hljsCss) hljsCss.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+  } else {
+    moonIcon.style.opacity = '1'; moonIcon.style.transform='scale(1)'; sunIcon.style.opacity='0'; sunIcon.style.transform='scale(.85)';
+    if (mdCss) mdCss.href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
+    if (hljsCss) hljsCss.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+  }
 }
-
 const saved = localStorage.getItem('site-theme') || 'dark';
-applyTheme(saved);
-
-themeToggle.addEventListener('click', () => {
+setTheme(saved);
+document.getElementById('themeToggle').addEventListener('click', ()=> {
   const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   localStorage.setItem('site-theme', next);
-  applyTheme(next);
+  setTheme(next);
 });
 
-/* ---- Marked renderer with safe highlighting ---- */
-marked.setOptions({
-  gfm: true,
-  breaks: true
-});
+/* ====== Marked renderer: always return string and coerce code to string ====== */
+marked.setOptions({ gfm:true, breaks:true });
 
 function safeHighlight(code, lang){
   const s = String(code || '');
   try {
     if (lang && hljs.getLanguage(lang)){
-      return hljs.highlight(s, {language: lang}).value;
+      return hljs.highlight(s, { language: lang }).value;
     }
     return hljs.highlightAuto(s).value;
-  } catch (e){
-    console.warn('hljs fail', e);
+  } catch (err){
+    console.warn('highlight failed', err);
     return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   }
 }
@@ -200,6 +185,7 @@ renderer.code = function(code, infostring){
   const lang = (infostring || '').trim().toLowerCase();
   const codeStr = String(code || '');
   if (lang === 'mermaid'){
+    // return a div.mermaid string (no objects)
     return `<div class="mermaid">${codeStr}</div>`;
   }
   const highlighted = safeHighlight(codeStr, lang);
@@ -207,37 +193,33 @@ renderer.code = function(code, infostring){
 };
 marked.use({ renderer });
 
-/* ---- load README and render ---- */
+/* ====== Load README and render safely ====== */
 const RAW = 'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
 let fullMd = '';
 
 async function loadReadme(){
   const container = document.getElementById('content');
   try {
-    const res = await fetch(RAW);
-    if (!res.ok) throw new Error('fetch failed');
-    fullMd = await res.text();
+    const r = await fetch(RAW);
+    if (!r.ok) throw new Error('Failed to fetch README');
+    fullMd = await r.text();
     container.innerHTML = marked.parse(fullMd);
 
-    // run mermaid on mermaid blocks (mermaid v8+ can parse div.mermaid)
-    try {
-      mermaid.init(undefined, container.querySelectorAll('.mermaid'));
-    } catch(e){ console.warn('mermaid render error', e); }
+    // render mermaid blocks (mermaid v9+ accepts div.mermaid)
+    try { mermaid.init(undefined, container.querySelectorAll('.mermaid')); } catch(e){ console.warn('mermaid init error', e); }
 
     attachCopyButtons();
-    // after rendering ensure search highlighting is applied if search has value
-    if (document.getElementById('searchInput').value.trim()) doSearch(document.getElementById('searchInput').value.trim());
-  } catch (e) {
+  } catch (e){
     console.error(e);
-    container.innerHTML = '<p class="muted">Failed to load README. Try again later.</p>';
+    container.innerHTML = '<p style="color:#ff7b7b">Unable to load README</p>';
   }
 }
 loadReadme();
 
-/* ---- copy buttons ---- */
+/* ====== Copy buttons for code blocks ====== */
 function attachCopyButtons(){
   document.querySelectorAll('pre').forEach(pre => {
-    if (pre.querySelector('.copy-btn')) return; // already added
+    if (pre.querySelector('.copy-btn')) return;
     const btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.type = 'button';
@@ -248,20 +230,26 @@ function attachCopyButtons(){
       try {
         await navigator.clipboard.writeText(codeEl.innerText);
         btn.textContent = 'Copied!';
-        setTimeout(()=> btn.textContent='Copy',1200);
+        setTimeout(()=> btn.textContent='Copy', 1200);
       } catch {
         btn.textContent = 'Error';
-        setTimeout(()=> btn.textContent='Copy',1200);
+        setTimeout(()=> btn.textContent='Copy', 1200);
       }
     });
     pre.appendChild(btn);
   });
 }
 
-/* ---- SEARCH + HIGHLIGHT ---- */
+/* observe content changes and attach copy buttons / highlight */
+const contentEl = document.getElementById('content');
+const mo = new MutationObserver(()=> {
+  attachCopyButtons();
+});
+mo.observe(contentEl, { childList:true, subtree:true });
+
+/* ====== SEARCH + HIGHLIGHT ====== */
 const searchInput = document.getElementById('searchInput');
 
-// Remove any previous marks under a node
 function clearMarks(root){
   root.querySelectorAll('mark.search-hit').forEach(m => {
     const parent = m.parentNode;
@@ -270,119 +258,81 @@ function clearMarks(root){
   });
 }
 
-// highlight text inside nodes (only plain text nodes inside content)
-function highlightMatches(root, query){
-  if (!query) return 0;
+function highlightMatches(root, q){
+  if (!q) return 0;
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
-  const q = query.toLowerCase();
+  const nodes = [];
   let node;
-  let firstEl = null;
-  let count = 0;
-  const textNodes = [];
-  while(node = walker.nextNode()){ textNodes.push(node); }
-
-  textNodes.forEach(textNode => {
+  while (node = walker.nextNode()) nodes.push(node);
+  const lowerQ = q.toLowerCase();
+  let first = null, count = 0;
+  nodes.forEach(textNode => {
     const parent = textNode.parentNode;
     if (!parent) return;
-    if (parent.closest('pre') ) return; // skip code blocks
-    const text = textNode.nodeValue;
-    const low = text.toLowerCase();
-    let idx = low.indexOf(q);
+    if (parent.closest('pre')) return; // skip code blocks
+    const txt = textNode.nodeValue;
+    const low = txt.toLowerCase();
+    let idx = low.indexOf(lowerQ);
     if (idx === -1) return;
     const frag = document.createDocumentFragment();
-    let lastIndex = 0;
-    while (idx !== -1) {
-      // text before match
-      if (idx > lastIndex){
-        frag.appendChild(document.createTextNode(text.slice(lastIndex, idx)));
-      }
-      // matched text
+    let last = 0;
+    while (idx !== -1){
+      if (idx > last) frag.appendChild(document.createTextNode(txt.slice(last, idx)));
       const mark = document.createElement('mark');
       mark.className = 'search-hit';
-      mark.textContent = text.slice(idx, idx + q.length);
+      mark.textContent = txt.slice(idx, idx + q.length);
       frag.appendChild(mark);
+      if (!first) first = mark;
       count++;
-      if (!firstEl) firstEl = mark;
-      lastIndex = idx + q.length;
-      idx = text.toLowerCase().indexOf(q, lastIndex);
+      last = idx + q.length;
+      idx = txt.toLowerCase().indexOf(lowerQ, last);
     }
-    // remaining text
-    if (lastIndex < text.length){
-      frag.appendChild(document.createTextNode(text.slice(lastIndex)));
-    }
+    if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
     parent.replaceChild(frag, textNode);
   });
-
-  if (firstEl) {
-    firstEl.scrollIntoView({behavior:'smooth', block:'center'});
-  }
+  if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
   return count;
 }
 
-function doSearch(query){
-  const container = document.getElementById('content');
-  // if empty, restore full content
-  if (!query) {
-    container.innerHTML = marked.parse(fullMd);
-    try { mermaid.init(undefined, container.querySelectorAll('.mermaid')); } catch(e){}
-    attachCopyButtons();
-    return;
-  }
-
-  // simple filter: break markdown into paragraphs/blocks and show ones that contain the query
-  const blocks = fullMd.split(/\n{2,}/).filter(b => b.toLowerCase().includes(query.toLowerCase()));
-  const resultMd = blocks.join('\n\n') || `> No results for "${query}"`;
-  container.innerHTML = marked.parse(resultMd);
-  try { mermaid.init(undefined, container.querySelectorAll('.mermaid')); } catch(e){}
-  attachCopyButtons();
-  // after DOM is ready, clear previous marks then highlight
-  clearMarks(container);
-  highlightMatches(container, query);
-}
-
-let searchDeb = null;
+let searchTimer = null;
 searchInput.addEventListener('input', (e) => {
-  const v = e.target.value;
-  clearTimeout(searchDeb);
-  searchDeb = setTimeout(()=> doSearch(v.trim()), 180);
+  const q = e.target.value.trim();
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=> {
+    if (!q){
+      // restore full md
+      contentEl.innerHTML = marked.parse(fullMd);
+      try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
+      attachCopyButtons();
+      return;
+    }
+    // simple block filter
+    const blocks = fullMd.split(/\n{2,}/).filter(b => b.toLowerCase().includes(q.toLowerCase()));
+    const mdOut = blocks.join('\n\n') || `> No results for "${q}"`;
+    contentEl.innerHTML = marked.parse(mdOut);
+    try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
+    attachCopyButtons();
+    clearMarks(contentEl);
+    highlightMatches(contentEl, q);
+  }, 180);
 });
 searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape'){ searchInput.value=''; doSearch(''); }
+  if (e.key === 'Escape'){ searchInput.value=''; searchInput.dispatchEvent(new Event('input')); }
 });
 
-/* ---- Download PDF (html2pdf) ---- */
-document.getElementById('pdfBtn').addEventListener('click', async () => {
-  const element = document.getElementById('content');
-  // temporarily expand all mermaid SVGs (they are already SVG) and ensure fonts/colors look ok
-  const opt = {
-    margin:       10,
-    filename:     'js-interview-guide.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, logging: false },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak:    { mode: ['css', 'legacy'] }
-  };
-  // clone element to avoid layout shifts, and remove interactive elements like copy buttons
-  const clone = element.cloneNode(true);
-  clone.querySelectorAll('.copy-btn').forEach(n => n.remove());
-  // ensure marks are preserved
-  document.body.appendChild(clone);
-  // create pdf
-  try {
-    await html2pdf().set(opt).from(clone).save();
-  } catch (err){
-    console.warn('pdf error', err);
-    alert('PDF generation failed. Try again or use browser print.');
-  } finally {
-    clone.remove();
-  }
+/* ====== Native print PDF (content-only) ====== */
+document.getElementById('pdfBtn').addEventListener('click', () => {
+  window.print();
 });
 
-/* ---- ensure copy buttons on initial load may be attached when content is present ---- */
-const mutationObserver = new MutationObserver(() => {
-  attachCopyButtons();
-});
-mutationObserver.observe(document.getElementById('content'), {childList:true, subtree:true});
+/* ====== ensure hljs applied to code blocks already rendered by renderer ====== */
+/* marked renderer already outputs highlighted markup, but ensure raw code blocks (if any) get highlighted */
+function reapplyHljs(){
+  document.querySelectorAll('pre code').forEach(block => {
+    try { hljs.highlightElement(block); } catch(e){}
+  });
+}
+reapplyHljs();
 </script>
 </body>
 </html>
