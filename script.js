@@ -100,9 +100,8 @@ function enhanceMermaid() {
 
   // Initialize Mermaid (async)
   if (typeof mermaid !== "undefined") {
-    const currentTheme = localStorage.getItem("theme") || "dark";
-    mermaid.initialize({ startOnLoad: false, theme: currentTheme });    mermaid.run();
-  }
+         mermaid.initialize({ startOnLoad: false, theme: "base" });
+    mermaid.run();
 }
 
 /* =========================================================
