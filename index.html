@@ -233,6 +233,10 @@
       .markdown-body { padding: 0; }
     }
   </style>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d1117">
 </head>
 
 <body>
@@ -480,6 +484,15 @@
     document.getElementById('pdfBtn').addEventListener('click', () => {
       window.print();
     });
+    
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.log('Service Worker registration failed', err));
+    });
+  }
   </script>
 </body>
 </html>
