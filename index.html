@@ -5,167 +5,223 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>JavaScript Interview Guide</title>
 
-  <!-- GitHub markdown CSS (we switch for print/theme) -->
+  <!-- Markdown + Highlight styles (IDs so script can swap them on theme change) -->
   <link id="md-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css">
-
-  <!-- highlight.js -->
   <link id="hljs-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+  <!-- Highlight.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-  <!-- marked.js -->
+  <!-- Marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- mermaid (global) -->
+  <!-- Mermaid -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
   <style>
     :root{
-      --bg-dark:#0d1117;
-      --panel:#0f1720;
-      --text:#c9d1d9;
-      --muted:#8b949e;
-      --accent:#58a6ff;
-      --radius:10px;
-      --code-bg:#0b1220;
+      --bg-dark: #0d1117;
+      --bg-panel: #0f1720;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --radius: 10px;
+      --code-bg: #0b1220;
+      --header-height: 64px; /* used to offset content */
     }
     [data-theme="light"]{
-      --bg-dark:#fff;
-      --panel:#f6f8fa;
-      --text:#24292f;
-      --muted:#57606a;
-      --accent:#0969da;
-      --code-bg:#f6f8fa;
+      --bg-dark: #ffffff;
+      --bg-panel: #f6f8fa;
+      --text: #24292f;
+      --muted: #57606a;
+      --accent: #0969da;
+      --code-bg: #f6f8fa;
     }
 
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--bg-dark);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.45}
-    .app{max-width:1100px;margin:0 auto;padding:18px}
-
-    /* Permanent sticky header */
-    .header-wrap {
-      position:sticky; top:0; z-index:9999;
+    html,body{height:100%;margin:0;background:var(--bg-dark);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    /* Fixed header full-width (Option B: large search) */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       backdrop-filter: blur(8px);
-      background: linear-gradient(180deg, rgba(13,17,23,0.88), rgba(13,17,23,0.72));
+      background: linear-gradient(180deg, rgba(13,17,23,0.92), rgba(13,17,23,0.78));
       border-bottom: 1px solid rgba(255,255,255,0.03);
     }
-    [data-theme="light"] .header-wrap {
-      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88));
-      border-color:#d0d7de;
-    }
-    .header {
-      max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 18px;
+    [data-theme="light"] .site-header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+      border-color: #d0d7de;
     }
 
-    .brand { font-weight:700; color:var(--accent); margin-right:10px }
-    .search {
-      display:flex;align-items:center;gap:8px;background:var(--panel);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.03);flex:1;
-    }
-    [data-theme="light"] .search{ background: #fff; border-color: #dfe6ec; }
-    .search input{background:transparent;border:0;outline:0;color:var(--text);font-size:0.95rem;min-width:200px}
-    .controls{display:flex;align-items:center;gap:8px}
-
-    /* theme toggle */
-    .toggle-btn{
-      width:40px;height:36px;border-radius:8px;border:0;background:transparent;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
-    }
-    .toggle-btn svg{width:18px;height:18px;display:block;stroke:currentColor;fill:none;transition:transform .18s ease, opacity .18s}
-
-    /* buttons */
-    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
-    .pdf-btn{background:var(--accent);color:var(--bg-dark)}
-
-    /* content */
-    .content{padding-top:12px}
-    .markdown-body{padding:8px 0;max-width:100%}
-
-    /* code blocks and copy */
-    pre{background:var(--code-bg);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);overflow:auto;position:relative;margin:14px 0}
-    pre code{display:block;white-space:pre; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace}
-    .copy-btn{position:absolute;top:8px;right:8px;background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px}
-
-    /* search highlight */
-    mark.search-hit{background:#fff18a;color:#000;padding:0 2px;border-radius:2px}
-
-    /* responsive */
-    @media (max-width:640px){
-      .header{flex-wrap:wrap;gap:8px}
-      .brand{font-size:0.95rem}
-      .search input{font-size:0.92rem}
+    .site-header .inner {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 18px;
     }
 
-    /* PRINT: clean PDF (hide header, controls, copy buttons) */
+    .brand { font-weight: 700; color: var(--accent); font-size: 1rem; flex: 0 0 auto; }
+    .search-bar {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background: var(--bg-panel);
+      border-radius: 10px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,0.03);
+      flex: 1 1 auto;
+      min-width: 120px;
+    }
+    [data-theme="light"] .search-bar { background: var(--bg-panel); border-color: #dfe6ec; }
+    .search-bar svg { opacity: .9; flex:0 0 16px; }
+    .search-bar input {
+      border: 0; outline: 0; background: transparent; color: var(--text); width:100%;
+      font-size: 0.96rem; padding: 6px 0;
+    }
+
+    .controls { display:flex; gap:10px; align-items:center; flex: 0 0 auto; }
+
+    /* nice animated sun/moon toggle (style 1) */
+    .theme-toggle {
+      width:40px; height:40px; border-radius:8px; border:0; background:transparent; cursor:pointer; display:inline-grid; place-items:center; padding:0;
+    }
+    .theme-toggle .svg-wrap { position:relative; width:22px; height:22px; display:block; }
+    .theme-toggle svg { position:absolute; inset:0; width:22px; height:22px; transition: transform .25s cubic-bezier(.2,.9,.2,1), opacity .22s ease-in-out; transform-origin:center; stroke: currentColor; fill:none; stroke-width:1.4 }
+    .theme-toggle .sun { transform: scale(.8); opacity:0; }
+    .theme-toggle .moon { transform: scale(1); opacity:1; }
+    [data-theme="light"] .theme-toggle .sun { transform: scale(1); opacity:1; }
+    [data-theme="light"] .theme-toggle .moon { transform: scale(.8); opacity:0; }
+
+    /* PDF button */
+    .pdf-btn { background: var(--accent); color: var(--bg-dark); border: 0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+
+    /* layout container offset to account for fixed header */
+    .app { max-width: 1100px; margin: 0 auto; padding: calc(var(--header-height) + 18px) 18px 64px; }
+
+    /* markdown content */
+    .markdown-body { max-width: 100%; padding-bottom: 40px; }
+
+    /* code block visuals */
+    pre {
+      background: var(--code-bg);
+      padding:14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      overflow:auto;
+      position:relative;
+      margin: 14px 0;
+    }
+    pre code{ display:block; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:0.93rem; line-height:1.45 }
+    .copy-btn { position:absolute; top:8px; right:8px; background:var(--bg-panel); color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:6px 8px; border-radius:6px; cursor:pointer; font-size:12px; }
+
+    /* search highlight visuals */
+    mark.search-hit { background: #fff18a; color:#000; padding:0 2px; border-radius:2px; }
+
+    /* small utilities */
+    .muted { color: var(--muted); font-size:0.9rem; }
+
+    /* responsive adjustments */
+    @media (max-width: 720px) {
+      .brand { display:none; } /* keep search full width on small screens */
+      .search-bar input { font-size:0.9rem }
+      .pdf-btn { display:none } /* reduce clutter on small screens */
+    }
+
+    /* print: hide header/controls and copy buttons for clean PDF */
     @media print {
-      body{background:#fff;color:#000}
-      .header-wrap, .controls, .copy-btn, .pdf-btn { display:none !important }
-      .app{padding:0}
-      .markdown-body{padding:0;margin:0}
-      pre{background:transparent;border:0;padding:0}
+      .site-header, .controls, .copy-btn { display:none !important; }
+      body { background: white; color: black; }
+      pre { background: transparent !important; border: none !important; padding: 0 !important; }
+      a[href]:after { content: ""; } /* avoid printing urls */
+      .app { padding: 0; margin: 0; }
+      .markdown-body { padding: 0; }
     }
   </style>
 </head>
 <body>
-  <!-- Header always sticky -->
-  <div class="header-wrap" role="banner">
-    <header class="header" role="navigation">
-      <div style="display:flex;align-items:center;gap:12px;flex:1">
-        <div class="brand">JS Interview Guide</div>
-        <div class="search" role="search" aria-label="Search site">
-          <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.9"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.4" fill="none"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="1.4"/></svg>
-          <input id="searchInput" placeholder="Search the site (Esc to clear)"/>
-        </div>
+
+  <!-- Fixed header (Option B: big search) -->
+  <div class="site-header" role="banner" aria-hidden="false">
+    <div class="inner">
+      <div class="brand">JS Interview</div>
+
+      <div class="search-bar" role="search" aria-label="Search the site">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="6"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" placeholder="Search everything (press Esc to clear)" aria-label="Search input">
       </div>
 
-      <div class="controls" role="toolbar" aria-label="Controls">
-        <button id="pdfBtn" class="btn pdf-btn" title="Download as PDF">Download PDF</button>
+      <div style="flex:0 0 auto;display:flex;align-items:center;gap:10px" class="controls" role="toolbar">
+        <button id="pdfBtn" class="pdf-btn" title="Print / Save as PDF">Download PDF</button>
 
-        <button id="themeToggle" class="toggle-btn" aria-label="Toggle theme" title="Toggle theme">
-          <!-- moon (visible by default in dark) -->
-          <svg id="moonIcon" viewBox="0 0 24 24" style="opacity:1"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.4"/></svg>
-          <!-- sun -->
-          <svg id="sunIcon" viewBox="0 0 24 24" style="opacity:0;transform:scale(.85);margin-left:-24px"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.4"/><g stroke="currentColor" stroke-width="1.4"><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg>
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+          <span class="svg-wrap" aria-hidden="true">
+            <!-- sun -->
+            <svg class="sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <g><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g>
+            </svg>
+            <!-- moon -->
+            <svg class="moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </span>
         </button>
       </div>
-    </header>
+    </div>
   </div>
 
+  <!-- Main app container (content is offset by header height) -->
   <main class="app" role="main">
     <article id="content" class="markdown-body">
-      <h3>Loading README...</h3>
+      <h3 class="muted">Loading README...</h3>
     </article>
   </main>
 
 <script>
-/* ====== Safe initializations ====== */
-mermaid.initialize({ startOnLoad:false, theme: 'neutral' });
+/* ------------------ Setup and safety ------------------ */
+mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
 
-/* theme icons visibility */
+/* Theme handling - animated sun/moon (style 1) */
 const root = document.documentElement;
-const sunIcon = document.getElementById('sunIcon');
-const moonIcon = document.getElementById('moonIcon');
+const themeToggle = document.getElementById('themeToggle');
+const sun = document.querySelector('.sun');
+const moon = document.querySelector('.moon');
 const mdCss = document.getElementById('md-css');
 const hljsCss = document.getElementById('hljs-css');
 
-function setTheme(t){
+function applyTheme(t){
   root.setAttribute('data-theme', t);
   if (t === 'light'){
-    sunIcon.style.opacity = '1'; sunIcon.style.transform='scale(1)'; moonIcon.style.opacity='0'; moonIcon.style.transform='scale(.85)';
-    if (mdCss) mdCss.href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css';
-    if (hljsCss) hljsCss.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+    sun.style.opacity = '1'; sun.style.transform = 'scale(1)';
+    moon.style.opacity = '0'; moon.style.transform = 'scale(.85)';
+    if (mdCss) mdCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css';
+    if (hljsCss) hljsCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
   } else {
-    moonIcon.style.opacity = '1'; moonIcon.style.transform='scale(1)'; sunIcon.style.opacity='0'; sunIcon.style.transform='scale(.85)';
-    if (mdCss) mdCss.href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
-    if (hljsCss) hljsCss.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+    moon.style.opacity = '1'; moon.style.transform = 'scale(1)';
+    sun.style.opacity = '0'; sun.style.transform = 'scale(.85)';
+    if (mdCss) mdCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
+    if (hljsCss) hljsCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
   }
 }
-const saved = localStorage.getItem('site-theme') || 'dark';
-setTheme(saved);
-document.getElementById('themeToggle').addEventListener('click', ()=> {
+
+const savedTheme = localStorage.getItem('site-theme') || 'dark';
+applyTheme(savedTheme);
+themeToggle.addEventListener('click', () => {
   const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   localStorage.setItem('site-theme', next);
-  setTheme(next);
+  applyTheme(next);
 });
 
-/* ====== Marked renderer: always return string and coerce code to string ====== */
-marked.setOptions({ gfm:true, breaks:true });
+/* ------------------ Marked renderer - guaranteed string returns ------------------ */
+marked.setOptions({ gfm: true, breaks: true });
 
 function safeHighlight(code, lang){
   const s = String(code || '');
@@ -176,79 +232,90 @@ function safeHighlight(code, lang){
     return hljs.highlightAuto(s).value;
   } catch (err){
     console.warn('highlight failed', err);
+    // basic escape fallback
     return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   }
 }
 
 const renderer = new marked.Renderer();
-renderer.code = function(code, infostring){
+
+renderer.code = function(code, infostring) {
   const lang = (infostring || '').trim().toLowerCase();
-  const codeStr = String(code || '');
-  if (lang === 'mermaid'){
-    // return a div.mermaid string (no objects)
-    return `<div class="mermaid">${codeStr}</div>`;
+  const c = String(code || '');
+
+  if (lang === 'mermaid') {
+    // return a string with a div.mermaid containing raw mermaid text
+    return `<div class="mermaid">${c}</div>`;
   }
-  const highlighted = safeHighlight(codeStr, lang);
+
+  const highlighted = safeHighlight(c, lang);
   return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
 };
+
+renderer.codespan = function(text) {
+  return `<code>${String(text)}</code>`;
+};
+
+renderer.html = function(html) { return String(html); };
+renderer.text = function(text) { return String(text); };
+
 marked.use({ renderer });
 
-/* ====== Load README and render safely ====== */
+/* ------------------ Load README and render (safe) ------------------ */
 const RAW = 'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
 let fullMd = '';
 
 async function loadReadme(){
   const container = document.getElementById('content');
   try {
-    const r = await fetch(RAW);
-    if (!r.ok) throw new Error('Failed to fetch README');
-    fullMd = await r.text();
+    const res = await fetch(RAW);
+    if (!res.ok) throw new Error('Failed to fetch README');
+    fullMd = await res.text();
+
     container.innerHTML = marked.parse(fullMd);
 
-    // render mermaid blocks (mermaid v9+ accepts div.mermaid)
-    try { mermaid.init(undefined, container.querySelectorAll('.mermaid')); } catch(e){ console.warn('mermaid init error', e); }
+    // render mermaid blocks now that DOM is injected
+    try { mermaid.init(undefined, container.querySelectorAll('.mermaid')); } catch (e) { console.warn('mermaid init error', e); }
 
     attachCopyButtons();
-  } catch (e){
+  } catch (e) {
     console.error(e);
-    container.innerHTML = '<p style="color:#ff7b7b">Unable to load README</p>';
+    container.innerHTML = `<p class="muted">Failed to load README. Please try again later.</p>`;
   }
 }
 loadReadme();
 
-/* ====== Copy buttons for code blocks ====== */
+/* ------------------ Copy buttons for code blocks ------------------ */
 function attachCopyButtons(){
   document.querySelectorAll('pre').forEach(pre => {
-    if (pre.querySelector('.copy-btn')) return;
+    if (pre.querySelector('.copy-btn')) return; // already added
     const btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.type = 'button';
     btn.textContent = 'Copy';
     btn.addEventListener('click', async () => {
-      const codeEl = pre.querySelector('code');
-      if (!codeEl) return;
+      const code = pre.querySelector('code');
+      if (!code) return;
       try {
-        await navigator.clipboard.writeText(codeEl.innerText);
+        await navigator.clipboard.writeText(code.innerText);
         btn.textContent = 'Copied!';
-        setTimeout(()=> btn.textContent='Copy', 1200);
+        setTimeout(()=> btn.textContent = 'Copy', 1000);
       } catch {
         btn.textContent = 'Error';
-        setTimeout(()=> btn.textContent='Copy', 1200);
+        setTimeout(()=> btn.textContent = 'Copy', 1000);
       }
     });
     pre.appendChild(btn);
   });
 }
 
-/* observe content changes and attach copy buttons / highlight */
+/* MutationObserver to attach copy buttons as new content appears */
 const contentEl = document.getElementById('content');
-const mo = new MutationObserver(()=> {
-  attachCopyButtons();
-});
-mo.observe(contentEl, { childList:true, subtree:true });
+const mo = new MutationObserver(() => attachCopyButtons());
+mo.observe(contentEl, { childList: true, subtree: true });
 
-/* ====== SEARCH + HIGHLIGHT ====== */
-const searchInput = document.getElementById('searchInput');
+/* ------------------ SEARCH + HIGHLIGHT (skips code blocks) ------------------ */
+const input = document.getElementById('searchInput');
 
 function clearMarks(root){
   root.querySelectorAll('mark.search-hit').forEach(m => {
@@ -258,21 +325,21 @@ function clearMarks(root){
   });
 }
 
-function highlightMatches(root, q){
-  if (!q) return 0;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+function highlightMatches(root, query){
+  if (!query) return 0;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const nodes = [];
-  let node;
-  while (node = walker.nextNode()) nodes.push(node);
-  const lowerQ = q.toLowerCase();
-  let first = null, count = 0;
+  let n;
+  while (n = walker.nextNode()) nodes.push(n);
+  const q = query.toLowerCase();
+  let first = null, matches = 0;
   nodes.forEach(textNode => {
     const parent = textNode.parentNode;
     if (!parent) return;
-    if (parent.closest('pre')) return; // skip code blocks
+    if (parent.closest('pre') || parent.closest('.mermaid')) return; // skip code and mermaid
     const txt = textNode.nodeValue;
     const low = txt.toLowerCase();
-    let idx = low.indexOf(lowerQ);
+    let idx = low.indexOf(q);
     if (idx === -1) return;
     const frag = document.createDocumentFragment();
     let last = 0;
@@ -283,30 +350,30 @@ function highlightMatches(root, q){
       mark.textContent = txt.slice(idx, idx + q.length);
       frag.appendChild(mark);
       if (!first) first = mark;
-      count++;
+      matches++;
       last = idx + q.length;
-      idx = txt.toLowerCase().indexOf(lowerQ, last);
+      idx = txt.toLowerCase().indexOf(q, last);
     }
     if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
     parent.replaceChild(frag, textNode);
   });
-  if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
-  return count;
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return matches;
 }
 
 let searchTimer = null;
-searchInput.addEventListener('input', (e) => {
+input.addEventListener('input', (e) => {
   const q = e.target.value.trim();
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(()=> {
+  searchTimer = setTimeout(() => {
     if (!q){
-      // restore full md
+      // restore full document
       contentEl.innerHTML = marked.parse(fullMd);
       try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
       attachCopyButtons();
       return;
     }
-    // simple block filter
+    // simple block-level filter to reduce noise
     const blocks = fullMd.split(/\n{2,}/).filter(b => b.toLowerCase().includes(q.toLowerCase()));
     const mdOut = blocks.join('\n\n') || `> No results for "${q}"`;
     contentEl.innerHTML = marked.parse(mdOut);
@@ -314,25 +381,25 @@ searchInput.addEventListener('input', (e) => {
     attachCopyButtons();
     clearMarks(contentEl);
     highlightMatches(contentEl, q);
-  }, 180);
+  }, 160);
 });
-searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape'){ searchInput.value=''; searchInput.dispatchEvent(new Event('input')); }
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { input.value = ''; input.dispatchEvent(new Event('input')); }
 });
 
-/* ====== Native print PDF (content-only) ====== */
+/* ------------------ Native print (content-only) ------------------ */
 document.getElementById('pdfBtn').addEventListener('click', () => {
   window.print();
 });
 
-/* ====== ensure hljs applied to code blocks already rendered by renderer ====== */
-/* marked renderer already outputs highlighted markup, but ensure raw code blocks (if any) get highlighted */
+/* ------------------ ensure any remaining raw code gets highlighted (defensive) ------------------ */
 function reapplyHljs(){
   document.querySelectorAll('pre code').forEach(block => {
     try { hljs.highlightElement(block); } catch(e){}
   });
 }
 reapplyHljs();
+
 </script>
 </body>
 </html>
