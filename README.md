@@ -259,7 +259,7 @@ B
 config:
   layout: dagre
   look: classic
-  theme: default
+  theme: light
 ---
 graph TB
     CallStack["Call Stack<br/>(LIFO)"]
@@ -274,8 +274,8 @@ graph TB
     MicroQueue -.->|"Promise.then<br/>queueMicrotask<br/>MutationObserver"| CallStack
     MacroQueue -.->|"setTimeout<br/>setInterval<br/>DOM events<br/>I/O"| CallStack
     
-    style CallStack fill:#e1f5ff,stroke:#0366d6,stroke-width:2px
-    style MicroQueue fill:#fff5e1,stroke:#d68400,stroke-width:2px
-    style MacroQueue fill:#ffe1f5,stroke:#d6006e,stroke-width:2px
-    style EventLoop fill:#e1ffe1,stroke:#00d64a,stroke-width:2px
+    style CallStack fill:#0366d6,stroke:#0366d6,stroke-width:2px
+    style MicroQueue fill:#d68400,stroke:#d68400,stroke-width:2px
+    style MacroQueue fill:#d6006e,stroke:#d6006e,stroke-width:2px
+    style EventLoop fill:green,stroke:green,stroke-width:2px
 ```
