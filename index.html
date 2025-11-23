@@ -541,9 +541,15 @@
 
   /* ======= Service worker registration ======= */
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(() => {
-      console.log('sw registered');
-    }).catch(err => console.warn('sw failed', err));
+    (async () => {
+      try {
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        console.log('Service worker registered', reg.scope);
+      } catch (err) {
+        // don't break the app if sw is missing or registration fails
+        console.warn('Service worker registration failed:', err);
+      }
+    })();
   }
 
   /* ======= initial load ======= */
