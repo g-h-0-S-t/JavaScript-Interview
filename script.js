@@ -19,6 +19,7 @@ applyTheme(localStorage.getItem("theme") || "dark");
 themeToggle.onclick = () => {
   const newTheme = (localStorage.getItem("theme") === "dark" ? "light" : "dark");
   applyTheme(newTheme);
+     enhanceMermaid(); // Re-render Mermaid diagrams with new theme
 };
 
 /* =========================================================
@@ -99,8 +100,8 @@ function enhanceMermaid() {
 
   // Initialize Mermaid (async)
   if (typeof mermaid !== "undefined") {
-    mermaid.initialize({ startOnLoad: false, theme: "dark" });
-    mermaid.run();
+    const currentTheme = localStorage.getItem("theme") || "dark";
+    mermaid.initialize({ startOnLoad: false, theme: currentTheme });    mermaid.run();
   }
 }
 
