@@ -1,283 +1,154 @@
-/* main app script for JS Interview Guide
-   - safe marked renderer
-   - highlight.js usage
-   - mermaid rendering
-   - search with highlight and scroll
-   - copy code buttons
-   - print / PDF
-*/
+/* =========================================================
+   Load README.md from GitHub
+========================================================= */
+const RAW_URL = "https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md";
 
-/* ---------- README source (ONLY GitHub; no internal paths) ---------- */
-const README_URL =
-  'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
+const contentEl = document.getElementById("content");
+const searchInput = document.getElementById("searchInput");
+const themeToggle = document.getElementById("themeToggle");
 
-const contentEl = document.getElementById('content');
-const searchInput = document.getElementById('searchInput');
-const clearSearchBtn = document.getElementById('clearSearch');
-const pdfBtn = document.getElementById('pdfBtn');
-const themeToggle = document.getElementById('themeToggle');
-const mdCssLink = document.getElementById('md-css');
-const hljsCssLink = document.getElementById('hljs-css');
-
-/* ---------- theme handling ---------- */
-function applyTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  if (t === 'light') {
-    mdCssLink.href =
-      'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css';
-    hljsCssLink.href =
-      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
-  } else {
-    mdCssLink.href =
-      'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
-    hljsCssLink.href =
-      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
-  }
+/* =========================================================
+   THEME TOGGLE
+========================================================= */
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
 }
+applyTheme(localStorage.getItem("theme") || "dark");
 
-const savedTheme = localStorage.getItem('site-theme') || 'dark';
-applyTheme(savedTheme);
-
-themeToggle.addEventListener('click', () => {
-  const next =
-    document.documentElement.getAttribute('data-theme') === 'dark'
-      ? 'light'
-      : 'dark';
-  localStorage.setItem('site-theme', next);
-  applyTheme(next);
-});
-
-/* ---------- marked renderer ---------- */
-marked.setOptions({ gfm: true, breaks: true });
-
-function safeHighlight(code, lang) {
-  const s = String(code || '');
-  try {
-    if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight(s, { language: lang }).value;
-    }
-    return hljs.highlightAuto(s).value;
-  } catch (e) {
-    return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-  }
-}
-
-const renderer = new marked.Renderer();
-
-renderer.code = function (code, infostring) {
-  const lang = (infostring || '').trim().toLowerCase();
-  const text = String(code || '');
-
-  if (lang === 'mermaid') {
-    return `<div class="mermaid">${text}</div>`;
-  }
-
-  const highlighted = safeHighlight(text, lang);
-  return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
+themeToggle.onclick = () => {
+  const newTheme = (localStorage.getItem("theme") === "dark" ? "light" : "dark");
+  applyTheme(newTheme);
 };
 
-renderer.codespan = t => `<code>${String(t)}</code>`;
-renderer.text = t => String(t);
-renderer.html = h => String(h);
-
-marked.use({ renderer });
-
-/* ---------- fetch markdown safely ---------- */
-async function fetchReadme() {
-  const res = await fetch(README_URL, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Cannot load README.md');
-
-  const txt = await res.text();
-
-  // 👇 KEY FIX — ensure markdown is ALWAYS a string
-  return typeof txt === 'string' ? txt : String(txt);
-}
-
-/* ---------- render markdown ---------- */
-async function renderReadme() {
+/* =========================================================
+   FETCH RAW README
+========================================================= */
+async function loadReadme() {
   try {
-    const md = await fetchReadme();
-    window.__FULL_MD__ = md;
+    const res = await fetch(RAW_URL);
+    const md = await res.text();
 
-    contentEl.innerHTML = marked.parse(md);
-
-    requestAnimationFrame(() => {
-      document.querySelectorAll('pre code').forEach(block => {
-        try {
-          hljs.highlightElement(block);
-        } catch {}
-      });
-      attachCopyButtons();
+    const html = marked.parse(md, {
+      breaks: true,
+      gfm: true
     });
 
-    requestAnimationFrame(() => {
-      if (window.mermaid) {
-        try {
-          window.mermaid.initialize({
-            startOnLoad: false,
-            theme:
-              document.documentElement.getAttribute('data-theme') === 'dark'
-                ? 'dark'
-                : 'default'
-          });
-          window.mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-        } catch (e) {
-          console.warn('mermaid error', e);
-        }
-      }
-    });
-  } catch (e) {
-    contentEl.innerHTML =
-      '<p class="muted">Failed to load content. Try reloading the page.</p>';
+    contentEl.innerHTML = html;
+
+    highlightAllCodeBlocks();
+    enhanceMermaid();
+    addCopyButtons();
+
+  } catch (err) {
+    contentEl.innerHTML = `<p style="color:red;">Failed to load README.md</p>`;
+    console.error(err);
   }
 }
 
-/* ---------- copy buttons ---------- */
-function attachCopyButtons() {
-  document.querySelectorAll('pre').forEach(pre => {
-    if (pre.querySelector('.copy-btn')) return;
-    const btn = document.createElement('button');
-    btn.className = 'copy-btn';
-    btn.textContent = 'Copy';
-    btn.type = 'button';
+loadReadme();
 
-    btn.addEventListener('click', async () => {
-      const codeEl = pre.querySelector('code');
-      if (!codeEl) return;
+/* =========================================================
+   HIGHLIGHT JS INITIALIZATION
+========================================================= */
+function highlightAllCodeBlocks() {
+  document.querySelectorAll("pre code").forEach(block => {
+    hljs.highlightElement(block);
+  });
+}
 
-      try {
-        await navigator.clipboard.writeText(codeEl.innerText);
-        btn.textContent = 'Copied!';
-        setTimeout(() => (btn.textContent = 'Copy'), 1200);
-      } catch {
-        btn.textContent = 'Error';
-        setTimeout(() => (btn.textContent = 'Copy'), 1200);
-      }
-    });
+/* =========================================================
+   COPY BUTTONS FOR CODE BLOCKS
+========================================================= */
+function addCopyButtons() {
+  document.querySelectorAll("pre").forEach(pre => {
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "Copy";
+
+    btn.onclick = () => {
+      const text = pre.querySelector("code").innerText;
+      navigator.clipboard.writeText(text);
+      btn.textContent = "Copied!";
+      setTimeout(() => (btn.textContent = "Copy"), 1200);
+    };
 
     pre.appendChild(btn);
   });
 }
 
-/* observer */
-new MutationObserver(() => attachCopyButtons()).observe(contentEl, {
-  childList: true,
-  subtree: true
-});
+/* =========================================================
+   MERMAID DIAGRAMS
+========================================================= */
+function enhanceMermaid() {
+  // Scans for code blocks with "mermaid"
+  const mermaidBlocks = document.querySelectorAll("pre code.language-mermaid");
 
-/* ---------- search & highlight ---------- */
-function clearMarks(root) {
-  root.querySelectorAll('mark.search-hit').forEach(m => {
-    const p = m.parentNode;
-    p.replaceChild(document.createTextNode(m.textContent), m);
-    p.normalize();
+  mermaidBlocks.forEach((block, idx) => {
+    const parent = block.parentElement;
+    const code = block.innerText;
+
+    // Replace <pre><code> with <div class="mermaid">
+    const div = document.createElement("div");
+    div.className = "mermaid";
+    div.textContent = code;
+
+    parent.replaceWith(div);
   });
+
+  // Initialize Mermaid (async)
+  if (typeof mermaid !== "undefined") {
+    mermaid.initialize({ startOnLoad: false, theme: "default" });
+    mermaid.run();
+  }
 }
 
-function highlightMatches(root, query) {
-  if (!query) return;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+/* =========================================================
+   SEARCH + HIGHLIGHT
+========================================================= */
+searchInput.addEventListener("input", () => {
+  const term = searchInput.value.trim();
+
+  // Clear previous highlights
+  clearHighlights(contentEl);
+
+  if (!term) return;
+
+  highlightTerm(contentEl, term);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    searchInput.value = "";
+    clearHighlights(contentEl);
+  }
+});
+
+function highlightTerm(root, term) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+
   let node;
-  let firstHit = null;
-  const qLower = query.toLowerCase();
-
   while ((node = walker.nextNode())) {
-    const parent = node.parentNode;
-    if (!parent || parent.closest('pre') || parent.closest('.mermaid')) continue;
+    const val = node.nodeValue;
+    const idx = val.toLowerCase().indexOf(term.toLowerCase());
+    if (idx !== -1) {
+      const mark = document.createElement("mark");
+      mark.className = "search-hit";
+      mark.textContent = val.substr(idx, term.length);
 
-    const text = node.nodeValue;
-    const low = text.toLowerCase();
-    let idx = low.indexOf(qLower);
-    if (idx === -1) continue;
+      const before = document.createTextNode(val.substr(0, idx));
+      const after = document.createTextNode(val.substr(idx + term.length));
 
-    const frag = document.createDocumentFragment();
-    let last = 0;
-
-    while (idx !== -1) {
-      if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
-
-      const mark = document.createElement('mark');
-      mark.className = 'search-hit';
-      mark.textContent = text.slice(idx, idx + query.length);
-      frag.appendChild(mark);
-
-      if (!firstHit) firstHit = mark;
-
-      last = idx + query.length;
-      idx = low.indexOf(qLower, last);
+      const parent = node.parentNode;
+      parent.replaceChild(after, node);
+      parent.insertBefore(mark, after);
+      parent.insertBefore(before, mark);
     }
-
-    if (last < text.length)
-      frag.appendChild(document.createTextNode(text.slice(last)));
-
-    parent.replaceChild(frag, node);
   }
-
-  if (firstHit) firstHit.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-let searchTimer = null;
-
-searchInput.addEventListener('input', e => {
-  const q = e.target.value.trim();
-  clearTimeout(searchTimer);
-
-  searchTimer = setTimeout(() => {
-    if (!window.__FULL_MD__) return;
-
-    if (!q) {
-      contentEl.innerHTML = marked.parse(window.__FULL_MD__);
-      try {
-        window.mermaid.init(undefined, contentEl.querySelectorAll('.mermaid'));
-      } catch {}
-      attachCopyButtons();
-      return;
-    }
-
-    const blocks = window.__FULL_MD__
-      .split(/\n{2,}/)
-      .filter(b => b.toLowerCase().includes(q.toLowerCase()));
-
-    const out = blocks.join('\n\n') || `> No results for "${q}"`;
-
-    contentEl.innerHTML = marked.parse(out);
-
-    try {
-      window.mermaid.init(undefined, contentEl.querySelectorAll('.mermaid'));
-    } catch {}
-
-    attachCopyButtons();
-    clearMarks(contentEl);
-    highlightMatches(contentEl, q);
-  }, 160);
-});
-
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-  }
-});
-
-clearSearchBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  searchInput.dispatchEvent(new Event('input'));
-});
-
-/* ---------- PDF ---------- */
-pdfBtn.addEventListener('click', () => window.print());
-
-/* ---------- init ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.hljs) hljs.configure({ ignoreUnescapedHTML: true });
-  renderReadme();
-});
-
-/* service worker */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .catch(e => console.warn('SW registration failed', e));
+function clearHighlights(root) {
+  root.querySelectorAll("mark.search-hit").forEach(mark => {
+    mark.replaceWith(document.createTextNode(mark.textContent));
   });
 }
