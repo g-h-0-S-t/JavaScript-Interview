@@ -39,7 +39,7 @@ marked.use({
                     code(token) {
                                         console.log('Mermaid renderer - token.lang:', token.lang, 'trimmed:', (token.lang || '').trim());
                                     if ((token.lang || '').trim() === 'mermaid') {
-                            return `<pre class="mermaid">${token.text}</pre>`;                                                    }
+                            return `<div class="mermaid">${token.text}</pre>`;                                                    }
                                         return false; // Use default renderer for non-mermaid blocks
                                 }
                 }
