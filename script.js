@@ -46,10 +46,28 @@ async function loadReadme() {
             headerIds: true,
             mangle: false
         });
+
+                // Custom renderer for Mermaid diagrams
+                marked.use({
+                                renderer: {
+                                                    code(code, infostring) {
+                                                                            if ((infostring || '').trim() === 'mermaid') {
+                                                                                                        return `<div class="mermaid">${code}</div>`;
+                                                                                                    }
+                                                                            // Return false for default rendering
+                                                                            return false;
+                                                                        }
+                                                }
+                                            });
         
         // Parse markdown to HTML
         const html = marked.parse(markdown);
         document.getElementById('content').innerHTML = html;
+
+                // Initialize Mermaid to render diagrams
+                if (window.mermaid) {
+                                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                            }
         
         // Apply syntax highlighting
         document.querySelectorAll('pre code').forEach((block) => {
