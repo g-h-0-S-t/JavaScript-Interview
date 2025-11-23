@@ -196,28 +196,28 @@ In distributed systems, can only guarantee 2 out of 3: Consistency, Availability
 
 ### 31. Event Loop: Call Stack, Microtask Queue, and Macrotask Queue
 
-### Understanding JavaScript's Event Loop
+#### Understanding JavaScript's Event Loop
 
 JavaScript uses **one call stack** plus **multiple queues** to handle synchronous and asynchronous code execution.
 
-### Call Stack (Synchronous execution)
+#### Call Stack (Synchronous execution)
 
 - All normal code runs here in LIFO (Last In, First Out) order
 - Stack must be empty before any async callbacks run
 
-### Microtask Queue (High priority)
+#### Microtask Queue (High priority)
 
 - Contains: `Promise.then/catch/finally`, `queueMicrotask`, `MutationObserver`
 - Processed completely after each synchronous task
 - FIFO (First In, First Out)
 
-### Macrotask Queue (Lower priority)
+#### Macrotask Queue (Lower priority)
 
 - Contains: `setTimeout`, `setInterval`, DOM events, I/O
 - Processed one at a time, after all microtasks are done
 - FIFO (First In, First Out)
 
-### Execution Order Example
+#### Execution Order Example
 
 ```javascript
 console.log('A');
@@ -235,7 +235,7 @@ C
 B
 ```
 
-### Why this order?
+#### Why this order?
 
 1. **Synchronous phase (Call Stack):**
    - `console.log('A')` executes → prints **A**
@@ -250,7 +250,7 @@ B
 3. **Event Loop picks from Macrotask Queue:**
    - Runs callback `B` → prints **B**
 
-### Mermaid Diagram
+#### Mermaid Diagram - The Event Loop Flow
 
 ```mermaid
 ---
@@ -288,6 +288,24 @@ graph TB
     style ProcessBlock4 fill:light-blue,stroke:light-blue,stroke-width:2px
     style ProcessBlock5 fill:light-blue,stroke:light-blue,stroke-width:2px
 ```
+
+***
+
+**Summary Table (for interviews):**
+
+| Stack | Microtask Queue      | Macrotask Queue   |
+|-------|---------------------|------------------|
+| Sync code (for, fn, let…) | Promise.then, queueMicrotask | setTimeout, setInterval, DOM events |
+| LIFO   | FIFO, high priority | FIFO, low priority   |
+
+***
+
+**Interview gotcha:**  
+Microtasks always execute before the next macrotask—even if a timer is set to 0ms. Always expect all microtasks to flush first!
+
+***
+
+**This structure ensures any interviewer or candidate can quickly internalize both the core concept and mental model, plus map the diagram to the written explanation.**
 
 ***
 
