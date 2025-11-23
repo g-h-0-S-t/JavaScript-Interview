@@ -93,11 +93,7 @@ async function loadReadme() {
             });
         });
         
-    } catch (error) {
-        console.error('Error loading README:', error);
         document.getElementById('content').innerHTML = '<p>Error loading content. Please try again later.</p>';
-    }
-}
 
 // Add copy button to code blocks
 function addCopyButton(pre) {
