@@ -108,6 +108,10 @@ function enhanceMermaid() {
 /* =========================================================
    SEARCH + HIGHLIGHT
 ========================================================= */
+
+// State for search cycling
+let currentMatchIndex = 0;
+let matchElements = [];
 searchInput.addEventListener("input", () => {
   const term = searchInput.value.trim();
 
@@ -117,46 +121,35 @@ searchInput.addEventListener("input", () => {
   if (!term) return;
 
   highlightTerm(contentEl, term);
-       
-    // Scroll to first match
-    const firstMatch = contentEl.querySelector('mark.search-hit');
-    if (firstMatch) {
-        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-});
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    searchInput.value = "";
-    clearHighlights(contentEl);
+  // Reset state
+  currentMatchIndex = 0;
+  matchElements = [];
+  
+  // Collect all matches
+  matchElements = Array.from(contentEl.querySelectorAll('mark.search-hit'));
+  
+  // Highlight first match as active
+  if (matchElements.length > 0) {
+    matchElements[0].classList.add('active');
+    matchElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+                             // Handle Enter key to cycle through matches
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && matchElements.length > 0) {
+    e.preventDefault();
+    
+    // Remove active class from current match
+    matchElements[currentMatchIndex].classList.remove('active');
+    
+    // Move to next match (wrap around at end)
+    currentMatchIndex = (currentMatchIndex + 1) % matchElements.length;
+    
+    // Add active class to new current match
+    matchElements[currentMatchIndex].classList.add('active');
+    
+    // Scroll to the new match
+    matchElements[currentMatchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 });
-
-function highlightTerm(root, term) {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-
-  let node;
-  while ((node = walker.nextNode())) {
-    const val = node.nodeValue;
-    const idx = val.toLowerCase().indexOf(term.toLowerCase());
-    if (idx !== -1) {
-      const mark = document.createElement("mark");
-      mark.className = "search-hit";
-      mark.textContent = val.substr(idx, term.length);
-
-      const before = document.createTextNode(val.substr(0, idx));
-      const after = document.createTextNode(val.substr(idx + term.length));
-
-      const parent = node.parentNode;
-      parent.replaceChild(after, node);
-      parent.insertBefore(mark, after);
-      parent.insertBefore(before, mark);
-    }
-  }
-}
-
-function clearHighlights(root) {
-  root.querySelectorAll("mark.search-hit").forEach(mark => {
-    mark.replaceWith(document.createTextNode(mark.textContent));
-  });
-}
