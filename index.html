@@ -298,8 +298,11 @@
   });
 
   function escapeHtml(unsafe){
-    return unsafe.replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    // defensive: coerce to string (marked sometimes passes non-string)
+    const s = unsafe === undefined || unsafe === null ? '' : String(unsafe);
+    return s.replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
   }
+
 
   /* ======= copy button logic (reused) ======= */
   function addCopyButton(preElement){
