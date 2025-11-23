@@ -1,58 +1,62 @@
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>JavaScript Interview Guide</title>
 
-  <!-- Markdown + Highlight styles (IDs so script can swap them on theme change) -->
-  <link id="md-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css">
-  <link id="hljs-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link id="md-css" rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css">
+  <link id="hljs-css" rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 
-  <!-- Highlight.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
-  <!-- Marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-  <!-- Mermaid -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
   <style>
-    :root{
+    :root {
       --bg-dark: #0d1117;
-      --bg-panel: #0f1720;
+      --panel: #0f1720;
       --text: #c9d1d9;
       --muted: #8b949e;
       --accent: #58a6ff;
       --radius: 10px;
       --code-bg: #0b1220;
-      --header-height: 64px; /* used to offset content */
+      --header-height: 64px;
     }
-    [data-theme="light"]{
+    [data-theme="light"] {
       --bg-dark: #ffffff;
-      --bg-panel: #f6f8fa;
+      --panel: #f6f8fa;
       --text: #24292f;
       --muted: #57606a;
       --accent: #0969da;
       --code-bg: #f6f8fa;
     }
 
-    html,body{height:100%;margin:0;background:var(--bg-dark);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-    /* Fixed header full-width (Option B: large search) */
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Fixed header full width */
     .site-header {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
+      right: 0;
       height: var(--header-height);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       backdrop-filter: blur(8px);
       background: linear-gradient(180deg, rgba(13,17,23,0.92), rgba(13,17,23,0.78));
       border-bottom: 1px solid rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      z-index: 9999;
     }
     [data-theme="light"] .site-header {
       background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
@@ -60,346 +64,422 @@
     }
 
     .site-header .inner {
-      width: 100%;
       max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 18px;
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 18px;
     }
 
-    .brand { font-weight: 700; color: var(--accent); font-size: 1rem; flex: 0 0 auto; }
+    .brand {
+      font-weight: 700;
+      color: var(--accent);
+      flex: 0 0 auto;
+      font-size: 1rem;
+    }
+
     .search-bar {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      background: var(--bg-panel);
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      background: var(--panel);
       border-radius: 10px;
       padding: 8px 12px;
       border: 1px solid rgba(255,255,255,0.03);
-      flex: 1 1 auto;
-      min-width: 120px;
     }
-    [data-theme="light"] .search-bar { background: var(--bg-panel); border-color: #dfe6ec; }
-    .search-bar svg { opacity: .9; flex:0 0 16px; }
+    [data-theme="light"] .search-bar {
+      border-color: #dfe6ec;
+    }
+    .search-bar svg {
+      flex: 0 0 16px;
+      opacity: .9;
+    }
     .search-bar input {
-      border: 0; outline: 0; background: transparent; color: var(--text); width:100%;
-      font-size: 0.96rem; padding: 6px 0;
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.96rem;
+      outline: none;
+      padding: 4px 0;
     }
 
-    .controls { display:flex; gap:10px; align-items:center; flex: 0 0 auto; }
+    .controls {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
 
-    /* nice animated sun/moon toggle (style 1) */
     .theme-toggle {
-      width:40px; height:40px; border-radius:8px; border:0; background:transparent; cursor:pointer; display:inline-grid; place-items:center; padding:0;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      color: var(--text);
     }
-    .theme-toggle .svg-wrap { position:relative; width:22px; height:22px; display:block; }
-    .theme-toggle svg { position:absolute; inset:0; width:22px; height:22px; transition: transform .25s cubic-bezier(.2,.9,.2,1), opacity .22s ease-in-out; transform-origin:center; stroke: currentColor; fill:none; stroke-width:1.4 }
-    .theme-toggle .sun { transform: scale(.8); opacity:0; }
-    .theme-toggle .moon { transform: scale(1); opacity:1; }
-    [data-theme="light"] .theme-toggle .sun { transform: scale(1); opacity:1; }
-    [data-theme="light"] .theme-toggle .moon { transform: scale(.8); opacity:0; }
+    .theme-toggle .svg-wrap {
+      position: relative;
+      width: 22px;
+      height: 22px;
+    }
+    .theme-toggle svg {
+      position: absolute;
+      inset: 0;
+      width: 22px;
+      height: 22px;
+      transition: transform .25s cubic-bezier(.2,.9,.2,1), opacity .22s ease-in-out;
+      transform-origin: center;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.4;
+    }
+    .theme-toggle .sun {
+      transform: scale(.8);
+      opacity: 0;
+    }
+    .theme-toggle .moon {
+      transform: scale(1);
+      opacity: 1;
+    }
+    [data-theme="light"] .theme-toggle .sun {
+      transform: scale(1);
+      opacity: 1;
+    }
+    [data-theme="light"] .theme-toggle .moon {
+      transform: scale(.8);
+      opacity: 0;
+    }
 
-    /* PDF button */
-    .pdf-btn { background: var(--accent); color: var(--bg-dark); border: 0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+    .pdf-btn {
+      background: var(--accent);
+      color: var(--bg-dark);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-    /* layout container offset to account for fixed header */
-    .app { max-width: 1100px; margin: 0 auto; padding: calc(var(--header-height) + 18px) 18px 64px; }
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: calc(var(--header-height) + 18px) 18px 64px;
+    }
 
-    /* markdown content */
-    .markdown-body { max-width: 100%; padding-bottom: 40px; }
+    .markdown-body {
+      padding: 8px 0;
+      max-width: 100%;
+    }
 
-    /* code block visuals */
     pre {
       background: var(--code-bg);
-      padding:14px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.03);
-      overflow:auto;
-      position:relative;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.03);
+      overflow: auto;
+      position: relative;
       margin: 14px 0;
     }
-    pre code{ display:block; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:0.93rem; line-height:1.45 }
-    .copy-btn { position:absolute; top:8px; right:8px; background:var(--bg-panel); color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:6px 8px; border-radius:6px; cursor:pointer; font-size:12px; }
-
-    /* search highlight visuals */
-    mark.search-hit { background: #fff18a; color:#000; padding:0 2px; border-radius:2px; }
-
-    /* small utilities */
-    .muted { color: var(--muted); font-size:0.9rem; }
-
-    /* responsive adjustments */
-    @media (max-width: 720px) {
-      .brand { display:none; } /* keep search full width on small screens */
-      .search-bar input { font-size:0.9rem }
-      .pdf-btn { display:none } /* reduce clutter on small screens */
+    pre code {
+      display: block;
+      white-space: pre;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size: 0.93rem;
+      line-height: 1.45;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
     }
 
-    /* print: hide header/controls and copy buttons for clean PDF */
+    mark.search-hit {
+      background: #fff18a;
+      color: #000;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width:720px) {
+      .brand { display: none; }
+      .search-bar input { font-size: 0.9rem; }
+      .pdf-btn { display: none; }
+    }
+
     @media print {
-      .site-header, .controls, .copy-btn { display:none !important; }
+      .site-header, .controls, .copy-btn { display: none !important; }
       body { background: white; color: black; }
       pre { background: transparent !important; border: none !important; padding: 0 !important; }
-      a[href]:after { content: ""; } /* avoid printing urls */
       .app { padding: 0; margin: 0; }
       .markdown-body { padding: 0; }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Fixed header (Option B: big search) -->
-  <div class="site-header" role="banner" aria-hidden="false">
+  <header class="site-header" role="banner">
     <div class="inner">
       <div class="brand">JS Interview</div>
 
-      <div class="search-bar" role="search" aria-label="Search the site">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="6"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="searchInput" placeholder="Search everything (press Esc to clear)" aria-label="Search input">
+      <div class="search-bar" role="search">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
+          <circle cx="11" cy="11" r="6" stroke-width="1.4"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="1.4"></line>
+        </svg>
+        <input id="searchInput" placeholder="Search (Esc to clear)" aria-label="Search the site">
       </div>
 
-      <div style="flex:0 0 auto;display:flex;align-items:center;gap:10px" class="controls" role="toolbar">
+      <div class="controls">
         <button id="pdfBtn" class="pdf-btn" title="Print / Save as PDF">Download PDF</button>
-
-        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
-          <span class="svg-wrap" aria-hidden="true">
-            <!-- sun -->
-            <svg class="sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="4"></circle>
+        <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+          <span class="svg-wrap">
+            <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle>
               <g><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g>
             </svg>
-            <!-- moon -->
-            <svg class="moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
+            <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
           </span>
         </button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Main app container (content is offset by header height) -->
-  <main class="app" role="main">
+  <main class="app">
     <article id="content" class="markdown-body">
-      <h3 class="muted">Loading README...</h3>
+      <h3 class="muted">Loading …</h3>
     </article>
   </main>
 
-<script>
-/* ------------------ Setup and safety ------------------ */
-mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+  <script>
+    // Initialize mermaid
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
 
-/* Theme handling - animated sun/moon (style 1) */
-const root = document.documentElement;
-const themeToggle = document.getElementById('themeToggle');
-const sun = document.querySelector('.sun');
-const moon = document.querySelector('.moon');
-const mdCss = document.getElementById('md-css');
-const hljsCss = document.getElementById('hljs-css');
+    // Theme toggle logic
+    const root = document.documentElement;
+    const sun = document.querySelector('.sun');
+    const moon = document.querySelector('.moon');
+    const mdCss = document.getElementById('md-css');
+    const hljsCss = document.getElementById('hljs-css');
 
-function applyTheme(t){
-  root.setAttribute('data-theme', t);
-  if (t === 'light'){
-    sun.style.opacity = '1'; sun.style.transform = 'scale(1)';
-    moon.style.opacity = '0'; moon.style.transform = 'scale(.85)';
-    if (mdCss) mdCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css';
-    if (hljsCss) hljsCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
-  } else {
-    moon.style.opacity = '1'; moon.style.transform = 'scale(1)';
-    sun.style.opacity = '0'; sun.style.transform = 'scale(.85)';
-    if (mdCss) mdCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
-    if (hljsCss) hljsCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
-  }
-}
-
-const savedTheme = localStorage.getItem('site-theme') || 'dark';
-applyTheme(savedTheme);
-themeToggle.addEventListener('click', () => {
-  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('site-theme', next);
-  applyTheme(next);
-});
-
-/* ------------------ Marked renderer - guaranteed string returns ------------------ */
-marked.setOptions({ gfm: true, breaks: true });
-
-function safeHighlight(code, lang){
-  const s = String(code || '');
-  try {
-    if (lang && hljs.getLanguage(lang)){
-      return hljs.highlight(s, { language: lang }).value;
+    function applyTheme(t) {
+      root.setAttribute('data-theme', t);
+      if (t === 'light') {
+        sun.style.opacity = '1'; sun.style.transform = 'scale(1)';
+        moon.style.opacity = '0'; moon.style.transform = 'scale(.85)';
+        if (mdCss) mdCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css';
+        if (hljsCss) hljsCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+      } else {
+        moon.style.opacity = '1'; moon.style.transform = 'scale(1)';
+        sun.style.opacity = '0'; sun.style.transform = 'scale(.8)';
+        if (mdCss) mdCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
+        if (hljsCss) hljsCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+      }
     }
-    return hljs.highlightAuto(s).value;
-  } catch (err){
-    console.warn('highlight failed', err);
-    // basic escape fallback
-    return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-  }
-}
 
-const renderer = new marked.Renderer();
+    const saved = localStorage.getItem('site-theme') || 'dark';
+    applyTheme(saved);
 
-renderer.code = function(code, infostring) {
-  const lang = (infostring || '').trim().toLowerCase();
-  const c = String(code || '');
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('site-theme', next);
+      applyTheme(next);
+    });
 
-  if (lang === 'mermaid') {
-    // return a string with a div.mermaid containing raw mermaid text
-    return `<div class="mermaid">${c}</div>`;
-  }
+    // Marked + renderer to avoid [object Object]
+    marked.setOptions({ gfm: true, breaks: true });
 
-  const highlighted = safeHighlight(c, lang);
-  return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
-};
-
-renderer.codespan = function(text) {
-  return `<code>${String(text)}</code>`;
-};
-
-renderer.html = function(html) { return String(html); };
-renderer.text = function(text) { return String(text); };
-
-marked.use({ renderer });
-
-/* ------------------ Load README and render (safe) ------------------ */
-const RAW = 'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
-let fullMd = '';
-
-async function loadReadme(){
-  const container = document.getElementById('content');
-  try {
-    const res = await fetch(RAW);
-    if (!res.ok) throw new Error('Failed to fetch README');
-    fullMd = await res.text();
-
-    container.innerHTML = marked.parse(fullMd);
-
-    // render mermaid blocks now that DOM is injected
-    try { mermaid.init(undefined, container.querySelectorAll('.mermaid')); } catch (e) { console.warn('mermaid init error', e); }
-
-    attachCopyButtons();
-  } catch (e) {
-    console.error(e);
-    container.innerHTML = `<p class="muted">Failed to load README. Please try again later.</p>`;
-  }
-}
-loadReadme();
-
-/* ------------------ Copy buttons for code blocks ------------------ */
-function attachCopyButtons(){
-  document.querySelectorAll('pre').forEach(pre => {
-    if (pre.querySelector('.copy-btn')) return; // already added
-    const btn = document.createElement('button');
-    btn.className = 'copy-btn';
-    btn.type = 'button';
-    btn.textContent = 'Copy';
-    btn.addEventListener('click', async () => {
-      const code = pre.querySelector('code');
-      if (!code) return;
+    function safeHighlight(code, lang) {
+      const s = String(code || '');
       try {
-        await navigator.clipboard.writeText(code.innerText);
-        btn.textContent = 'Copied!';
-        setTimeout(()=> btn.textContent = 'Copy', 1000);
-      } catch {
-        btn.textContent = 'Error';
-        setTimeout(()=> btn.textContent = 'Copy', 1000);
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(s, { language: lang }).value;
+        }
+        return hljs.highlightAuto(s).value;
+      } catch (e) {
+        console.warn('highlight error', e);
+        return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      }
+    }
+
+    const renderer = new marked.Renderer();
+
+    renderer.code = function(code, infostring) {
+      const lang = (infostring || '').trim().toLowerCase();
+      const text = String(code || '');
+
+      if (lang === 'mermaid') {
+        // return a container div / pre with class so Mermaid can pick it up
+        return '<pre class="mermaid">' + text + '</pre>';
+      }
+
+      const highlighted = safeHighlight(text, lang);
+      return '<pre><code class="hljs language-' + lang + '">' + highlighted + '</code></pre>';
+    };
+
+    renderer.codespan = function(text) {
+      return '<code>' + String(text) + '</code>';
+    };
+
+    renderer.text = function(text) {
+      return String(text);
+    };
+
+    renderer.html = function(html) {
+      return String(html);
+    };
+
+    marked.use({ renderer });
+
+    // Load README
+    const RAW = 'https://raw.githubusercontent.com/g-h-0-S-t/JavaScript-Interview/main/README.md';
+    let fullMd = '';
+
+    async function loadReadme() {
+      const res = await fetch(RAW);
+      if (!res.ok) {
+        document.getElementById('content').innerHTML = '<p class="muted">Error loading content.</p>';
+        return;
+      }
+      fullMd = await res.text();
+      const html = marked.parse(fullMd);
+      document.getElementById('content').innerHTML = html;
+
+      // Apply highlight
+      document.querySelectorAll('pre code').forEach(block => {
+        try { hljs.highlightElement(block); } catch (e) { console.warn(e); }
+      });
+
+      // Render mermaid
+      try {
+        mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+      } catch (e) {
+        console.warn('Mermaid render error', e);
+      }
+
+      attachCopyButtons();
+    }
+
+    loadReadme();
+
+    // Copy buttons
+    function attachCopyButtons() {
+      document.querySelectorAll('pre').forEach(pre => {
+        if (pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = 'Copy';
+        btn.addEventListener('click', async () => {
+          const codeEl = pre.querySelector('code');
+          if (!codeEl) return;
+          try {
+            await navigator.clipboard.writeText(codeEl.innerText);
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 1200);
+          } catch (e) {
+            btn.textContent = 'Error';
+            setTimeout(() => btn.textContent = 'Copy', 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    }
+
+    const contentEl = document.getElementById('content');
+    const mo = new MutationObserver(() => attachCopyButtons());
+    mo.observe(contentEl, { childList: true, subtree: true });
+
+    // Search & highlight
+    const searchInput = document.getElementById('searchInput');
+    let searchTimer;
+    function clearMarks(root) {
+      root.querySelectorAll('mark.search-hit').forEach(m => {
+        const p = m.parentNode;
+        p.replaceChild(document.createTextNode(m.textContent), m);
+        p.normalize();
+      });
+    }
+    function highlightMatches(root, q) {
+      if (!q) return 0;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      let first = null;
+      while (node = walker.nextNode()) {
+        const parent = node.parentNode;
+        if (!parent || parent.closest('pre') || parent.classList.contains('mermaid')) continue;
+        const text = node.nodeValue;
+        const low = text.toLowerCase();
+        const index = low.indexOf(q.toLowerCase());
+        if (index === -1) continue;
+        const frag = document.createDocumentFragment();
+        let last = 0;
+        let idx = index;
+        while (idx !== -1) {
+          if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
+          const mark = document.createElement('mark');
+          mark.className = 'search-hit';
+          mark.textContent = text.slice(idx, idx + q.length);
+          frag.appendChild(mark);
+          if (!first) first = mark;
+          last = idx + q.length;
+          idx = text.toLowerCase().indexOf(q.toLowerCase(), last);
+        }
+        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+        parent.replaceChild(frag, node);
+      }
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    searchInput.addEventListener('input', e => {
+      const q = e.target.value.trim();
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        if (!q) {
+          contentEl.innerHTML = marked.parse(fullMd);
+          try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e) {}
+          attachCopyButtons();
+          return;
+        }
+        const blocks = fullMd.split(/\n{2,}/).filter(b => b.toLowerCase().includes(q.toLowerCase()));
+        const mdOut = blocks.join('\n\n') || `> No results for "${q}"`;
+        contentEl.innerHTML = marked.parse(mdOut);
+        try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e) {}
+        attachCopyButtons();
+        clearMarks(contentEl);
+        highlightMatches(contentEl, q);
+      }, 200);
+    });
+
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
       }
     });
-    pre.appendChild(btn);
-  });
-}
 
-/* MutationObserver to attach copy buttons as new content appears */
-const contentEl = document.getElementById('content');
-const mo = new MutationObserver(() => attachCopyButtons());
-mo.observe(contentEl, { childList: true, subtree: true });
-
-/* ------------------ SEARCH + HIGHLIGHT (skips code blocks) ------------------ */
-const input = document.getElementById('searchInput');
-
-function clearMarks(root){
-  root.querySelectorAll('mark.search-hit').forEach(m => {
-    const parent = m.parentNode;
-    parent.replaceChild(document.createTextNode(m.textContent), m);
-    parent.normalize();
-  });
-}
-
-function highlightMatches(root, query){
-  if (!query) return 0;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  const nodes = [];
-  let n;
-  while (n = walker.nextNode()) nodes.push(n);
-  const q = query.toLowerCase();
-  let first = null, matches = 0;
-  nodes.forEach(textNode => {
-    const parent = textNode.parentNode;
-    if (!parent) return;
-    if (parent.closest('pre') || parent.closest('.mermaid')) return; // skip code and mermaid
-    const txt = textNode.nodeValue;
-    const low = txt.toLowerCase();
-    let idx = low.indexOf(q);
-    if (idx === -1) return;
-    const frag = document.createDocumentFragment();
-    let last = 0;
-    while (idx !== -1){
-      if (idx > last) frag.appendChild(document.createTextNode(txt.slice(last, idx)));
-      const mark = document.createElement('mark');
-      mark.className = 'search-hit';
-      mark.textContent = txt.slice(idx, idx + q.length);
-      frag.appendChild(mark);
-      if (!first) first = mark;
-      matches++;
-      last = idx + q.length;
-      idx = txt.toLowerCase().indexOf(q, last);
-    }
-    if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
-    parent.replaceChild(frag, textNode);
-  });
-  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  return matches;
-}
-
-let searchTimer = null;
-input.addEventListener('input', (e) => {
-  const q = e.target.value.trim();
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    if (!q){
-      // restore full document
-      contentEl.innerHTML = marked.parse(fullMd);
-      try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
-      attachCopyButtons();
-      return;
-    }
-    // simple block-level filter to reduce noise
-    const blocks = fullMd.split(/\n{2,}/).filter(b => b.toLowerCase().includes(q.toLowerCase()));
-    const mdOut = blocks.join('\n\n') || `> No results for "${q}"`;
-    contentEl.innerHTML = marked.parse(mdOut);
-    try { mermaid.init(undefined, contentEl.querySelectorAll('.mermaid')); } catch(e){}
-    attachCopyButtons();
-    clearMarks(contentEl);
-    highlightMatches(contentEl, q);
-  }, 160);
-});
-input.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') { input.value = ''; input.dispatchEvent(new Event('input')); }
-});
-
-/* ------------------ Native print (content-only) ------------------ */
-document.getElementById('pdfBtn').addEventListener('click', () => {
-  window.print();
-});
-
-/* ------------------ ensure any remaining raw code gets highlighted (defensive) ------------------ */
-function reapplyHljs(){
-  document.querySelectorAll('pre code').forEach(block => {
-    try { hljs.highlightElement(block); } catch(e){}
-  });
-}
-reapplyHljs();
-
-</script>
+    // PDF via print
+    document.getElementById('pdfBtn').addEventListener('click', () => {
+      window.print();
+    });
+  </script>
 </body>
 </html>
