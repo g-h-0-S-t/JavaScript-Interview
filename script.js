@@ -145,6 +145,7 @@ document.addEventListener('keydown', (e) => {
 
 // Load README on page load
 loadReadme();
+    }
 
 console.log('%cJavaScript Interview Guide', 'font-size: 20px; font-weight: bold; color: #58a6ff;');
 console.log('%cTheme shortcut: Ctrl+Shift+L', 'font-size: 12px; color: #8b949e;');
