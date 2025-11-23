@@ -238,6 +238,9 @@
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     window.mermaid = mermaid;
     window.mermaid.initialize({ startOnLoad: false });
+    window.mermaid.run({
+      querySelector: ".mermaid"
+    });
   </script>
 
   <!-- main app script -->
@@ -284,18 +287,31 @@
   /* ======= marked renderer fixing for mermaid & code blocks ======= */
   marked.use({
     renderer: {
-      // signature (code, infostring, escaped) for marked v4+; solid for CDN build
-      code(code, infostring) {
-        const lang = (infostring || '').trim().toLowerCase();
-        if (lang === 'mermaid') {
-          return `<div class="mermaid">${code}</div>`;
+      code(code, lang) {
+        // Mermaid blocks must not be escaped
+        if (lang === "mermaid") {
+          return `
+            <div class="mermaid">
+              ${code}
+            </div>
+          `;
         }
-        // return language class for highlight.js
-        const safeLang = lang ? `language-${lang}` : '';
-        return `<pre><code class="${safeLang}">${escapeHtml(code)}</code></pre>`;
+  
+        // Normal code blocks (JavaScript, HTML, CSS etc)
+        const highlighted =
+          window.hljs.getLanguage(lang)
+            ? hljs.highlight(code, { language: lang }).value
+            : hljs.highlightAuto(code).value;
+  
+        return `
+          <pre><code class="hljs language-${lang}">
+            ${highlighted}
+          </code></pre>
+        `;
       }
     }
   });
+
 
   function escapeHtml(unsafe){
     // defensive: coerce to string (marked sometimes passes non-string)
