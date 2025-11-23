@@ -328,3 +328,21 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color);
 }
+
+/* Mermaid diagram styles */
+.mermaid, pre.mermaid {
+    display: flex;
+    justify-content: center;
+    margin: 2rem auto;
+    max-width: 100%;
+}
+
+/* Fix text color in Mermaid diagrams for dark theme */
+.mermaid text, pre.mermaid text {
+    fill: var(--text-primary) !important;
+}
+
+/* Override Mermaid's default text colors */
+.mermaid .nodeLabel, .mermaid .edgeLabel {
+    color: var(--text-primary) !important;
+}
