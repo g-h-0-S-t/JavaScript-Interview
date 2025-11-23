@@ -31,7 +31,8 @@ async function loadReadme() {
 
     const html = marked.parse(md, {
       breaks: true,
-      gfm: true
+      gfm: true,
+      async: false
     });
 
     contentEl.innerHTML = html;
