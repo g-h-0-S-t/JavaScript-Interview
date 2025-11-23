@@ -89,6 +89,55 @@ async function loadReadme() {
     });
 }
 
+// Add "Copy" button to all code blocks
+function addCopyButton(preElement) {
+    if (preElement.dataset.copied) return; // Prevent duplicate buttons
+    preElement.dataset.copied = "true";
+
+    const button = document.createElement("button");
+    button.className = "copy-button";
+    button.textContent = "Copy";
+
+    button.addEventListener("click", async () => {
+        const code = preElement.querySelector("code").innerText;
+
+        try {
+            await navigator.clipboard.writeText(code);
+            button.textContent = "Copied!";
+            button.style.background = "var(--accent-color)";
+            button.style.color = "var(--bg-primary)";
+
+            setTimeout(() => {
+                button.textContent = "Copy";
+                button.removeAttribute("style");
+            }, 1200);
+        } catch (err) {
+            button.textContent = "Error";
+            setTimeout(() => (button.textContent = "Copy"), 1200);
+        }
+    });
+
+    preElement.appendChild(button);
+}
+
+// Show copy buttons on hover (desktop)
+document.addEventListener("mouseover", (e) => {
+    const pre = e.target.closest("pre");
+    if (pre) {
+        const btn = pre.querySelector(".copy-button");
+        if (btn) btn.style.opacity = 1;
+    }
+});
+
+// Hide copy buttons when not hovered (desktop)
+document.addEventListener("mouseout", (e) => {
+    const pre = e.target.closest("pre");
+    if (pre) {
+        const btn = pre.querySelector(".copy-button");
+        if (btn && window.innerWidth > 768) btn.style.opacity = 0;
+    }
+});
+
 loadReadme();
 
 console.log('%cJavaScript Interview Guide', 'font-size: 20px; font-weight: bold; color: #58a6ff;');
