@@ -19,7 +19,7 @@ applyTheme(localStorage.getItem("theme") || "dark");
 themeToggle.onclick = () => {
   const newTheme = (localStorage.getItem("theme") === "dark" ? "light" : "dark");
   applyTheme(newTheme);
-     enhanceMermaid(); // Re-render Mermaid diagrams with new theme
+  enhanceMermaid(); // Re-render Mermaid diagrams with new theme
 };
 
 /* =========================================================
@@ -100,10 +100,10 @@ function enhanceMermaid() {
 
   // Initialize Mermaid (async)
   if (typeof mermaid !== "undefined") {
-         mermaid.initialize({ startOnLoad: false, theme: "base" });
+    mermaid.initialize({ startOnLoad: false, theme: "base" });
     mermaid.run();
+  }
 }
-   }
 
 /* =========================================================
    SEARCH + HIGHLIGHT
@@ -115,7 +115,7 @@ function clearHighlights(el) {
     const parent = mark.parentNode;
     parent.replaceChild(document.createTextNode(mark.textContent), mark);
   });
-     el.normalize();
+  el.normalize();
 }
 
 // Highlight search term in element
@@ -125,14 +125,14 @@ function highlightTerm(el, term) {
   const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`(${escapedTerm})`, 'gi');
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-  const nodesToReplace = [];  
+  const nodesToReplace = [];
   while (walker.nextNode()) {
     const node = walker.currentNode;
     if (node.parentElement.tagName !== 'MARK' && node.nodeValue.match(regex)) {
       nodesToReplace.push(node);
     }
   }
-  
+
   nodesToReplace.forEach(node => {
     const fragment = document.createDocumentFragment();
     const parts = node.nodeValue.split(regex);
@@ -167,31 +167,31 @@ searchInput.addEventListener("input", () => {
   // Reset state
   currentMatchIndex = 0;
   matchElements = [];
-  
+
   // Collect all matches
   matchElements = Array.from(contentEl.querySelectorAll('mark.search-hit'));
-  
+
   // Highlight first match as active
   if (matchElements.length > 0) {
     matchElements[0].classList.add('active');
     matchElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-   });
+});
 
-                             // Handle Enter key to cycle through matches
+// Handle Enter key to cycle through matches
 searchInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && matchElements.length > 0) {
     e.preventDefault();
-    
+
     // Remove active class from current match
     matchElements[currentMatchIndex].classList.remove('active');
-    
+
     // Move to next match (wrap around at end)
     currentMatchIndex = (currentMatchIndex + 1) % matchElements.length;
-    
+
     // Add active class to new current match
     matchElements[currentMatchIndex].classList.add('active');
-    
+
     // Scroll to the new match
     matchElements[currentMatchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
